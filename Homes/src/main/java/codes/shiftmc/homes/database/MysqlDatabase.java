@@ -3,8 +3,8 @@ package codes.shiftmc.homes.database;
 import codes.shiftmc.homes.config.DatabaseConfig;
 import codes.shiftmc.homes.model.Home;
 import codes.shiftmc.homes.model.Position;
-import codes.shiftmc.homes.model.UserData;
 import codes.shiftmc.homes.model.User;
+import codes.shiftmc.homes.model.UserData;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.jetbrains.annotations.NotNull;
@@ -54,9 +54,7 @@ public class MysqlDatabase extends Database {
             try (var pst = con.prepareStatement("CREATE TABLE IF NOT EXISTS enx_homes (name VARCHAR(17) NOT NULL, owner VARCHAR(36) NOT NULL, position VARCHAR(64) NOT NULL, PRIMARY KEY (name, owner))")) {
                 pst.executeUpdate();
             }
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to create tables", e);
-        }
+        } catch (SQLException e) { throw new RuntimeException("Failed to create tables", e); }
     }
 
     @Override

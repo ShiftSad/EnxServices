@@ -1,7 +1,7 @@
 package codes.shiftmc.homes.database;
 
-import codes.shiftmc.homes.model.UserData;
 import codes.shiftmc.homes.model.User;
+import codes.shiftmc.homes.model.UserData;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
