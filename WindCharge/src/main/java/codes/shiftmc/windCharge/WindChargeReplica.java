@@ -53,9 +53,9 @@ public class WindChargeReplica {
         nearbyEntities.forEach(entity -> {
             Location sourceLocation = location;
             Location targetLocation = entity.getLocation();
-            double distance = sourceLocation.distance(targetLocation);
 
             if (config.damagesEntities) {
+                System.out.println("Damaging entity");
                 // Players don't take damage from thrown Wind Charges.
                 if (!(entity instanceof Player) && entity instanceof LivingEntity livingEntity) {
                     var damageSource = DamageSource.builder(DamageType.WIND_CHARGE)
@@ -78,6 +78,7 @@ public class WindChargeReplica {
 
             // Change knockback
             if (entity instanceof LivingEntity livingEntity) {
+                System.out.println("Knocking back entity");
                 double dx = targetLocation.getX() - sourceLocation.getX();
                 double dz = targetLocation.getZ() - sourceLocation.getZ();
                 double distanceSquared = dx * dx + dz * dz;
