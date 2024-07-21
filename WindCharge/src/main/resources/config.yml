@@ -18,6 +18,7 @@ config:
     distancia-explosao: 1.2
 
     # Lista de blocos vulneraveis
+    # Automaticamente ignora blocos LEGACY.
     # Recomendado: Nao alterar
     blocos-vulneraveis:
       - "ENDS_WITH:DOOR&&!STARTS_WITH:IRON"
