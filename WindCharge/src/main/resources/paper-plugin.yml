@@ -1,0 +1,4 @@
+name: WindCharge
+version: '1.0.0'
+main: codes.shiftmc.windCharge.WindCharge
+api-version: '1.21'
