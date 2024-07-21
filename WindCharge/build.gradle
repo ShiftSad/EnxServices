@@ -1,4 +1,5 @@
 plugins {
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
     id 'java'
 }
 
@@ -41,3 +42,21 @@ processResources {
         expand props
     }
 }
+
+shadowJar {
+    // Removed classifier and version from the jar name
+    archiveClassifier.set('') // Remove the classifier to replace the default JAR
+    archiveVersion.set('') // Optional: remove version from the jar name if desired
+}
+
+task moveShadowedJar(type: Copy, dependsOn: shadowJar) {
+    from shadowJar.archiveFile.get().asFile.parentFile
+    include shadowJar.archiveFile.get().asFile.name
+    into '../run/plugins/'
+
+    doLast {
+        println "Successfully moved ${shadowJar.archiveFile.get().asFile.name} to ../../run/plugins/"
+    }
+}
+
+build.dependsOn moveShadowedJar
