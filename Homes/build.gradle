@@ -10,20 +10,16 @@ version = '1.0.0'
 
 repositories {
     mavenCentral()
-    maven {
-        name = "papermc-repo"
-        url = "https://repo.papermc.io/repository/maven-public/"
-    }
-    maven {
-        name = "sonatype"
-        url = "https://oss.sonatype.org/content/groups/public/"
-    }
+    maven { url = "https://repo.papermc.io/repository/maven-public/" }
+    maven { url = "https://repo.codemc.org/repository/maven-public/" }
+    maven { url = "https://oss.sonatype.org/content/groups/public/" }
 }
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
-    implementation 'com.zaxxer:HikariCP:5.1.0'
+    compileOnly "dev.jorel:commandapi-bukkit-core:9.5.0"
     implementation 'org.projectlombok:lombok:1.18.34'
+    implementation 'com.zaxxer:HikariCP:5.1.0'
 }
 
 def targetJavaVersion = 21
