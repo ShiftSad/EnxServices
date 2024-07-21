@@ -105,6 +105,26 @@ public class MysqlDatabase extends Database {
     }
 
     @Override
+    public CompletableFuture<Void> createIfNotExists(@NotNull User user) {
+        return CompletableFuture.supplyAsync(() -> {
+            try (var con = ds.getConnection()) {
+                // Check if user exists
+                try (var pst = con.prepareStatement("SELECT 1 FROM enx_users WHERE uuid = ?")) {
+                    pst.setString(1, user.uuid().toString());
+                    try (var rs = pst.executeQuery()) {
+                        if (!rs.next()) { // It doesn't
+                            createUser(user).join();
+                        }
+                    }
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            return null; // Return null to match the CompletableFuture<Void> signature
+        }, executorService);
+    }
+
+    @Override
     public CompletableFuture<Void> updateUser(@NotNull UserData userData) {
         return CompletableFuture.runAsync(() -> {
             Connection con = null;
