@@ -3,9 +3,9 @@ package codes.shiftmc.homes;
 import codes.shiftmc.homes.config.DatabaseConfig;
 import codes.shiftmc.homes.database.Database;
 import codes.shiftmc.homes.database.MysqlDatabase;
+import codes.shiftmc.homes.listeners.PlayerJoin;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import lombok.SneakyThrows;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -48,5 +48,7 @@ public final class Homes extends JavaPlugin {
         } catch (IOException e) { throw new RuntimeException(e); }
 
         database = new MysqlDatabase(databaseConfig);
+
+        getServer().getPluginManager().registerEvents(new PlayerJoin(database), this);
     }
 }
