@@ -19,7 +19,7 @@ config:
 
     # Lista de blocos vulneraveis
     # Recomendado: Nao alterar
-    vulneraveis:
+    blocos-vulneraveis:
       - "ENDS_WITH:DOOR&&!STARTS_WITH:IRON"
       - "ENDS_WITH:TRAPDOOR&&!STARTS_WITH:IRON"
       - "ENDS_WITH:FENCE_GATE"
