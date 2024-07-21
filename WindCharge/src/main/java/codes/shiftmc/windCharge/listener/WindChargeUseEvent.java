@@ -24,11 +24,16 @@ public class WindChargeUseEvent implements Listener  {
     @EventHandler
     public void onProjectiveLaunch(ProjectileLaunchEvent event) {
         if (event.getEntity() instanceof WindCharge windCharge) {
-            var replica = (WindChargeReplica) windCharge;
-            // If not thrown by dispenser, or player return
-            if (!(replica.getShooter() instanceof Dispenser) || !(replica.getShooter() instanceof Player)) return;
-            event.setCancelled(true);
-            replica.explode();
+            var replica = new WindChargeReplica(
+                    windCharge.getShooter(),
+                    windCharge.getWorld(),
+                    windCharge.getLocation(),
+                    windCharge
+            );
+
+            if (windCharge.getShooter() instanceof Player || windCharge.getShooter() instanceof Dispenser) {
+                replica.explode();
+            }
         }
     }
 }

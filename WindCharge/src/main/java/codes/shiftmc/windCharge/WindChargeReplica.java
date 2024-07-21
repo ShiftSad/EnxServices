@@ -4,7 +4,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Dispenser;
-import org.bukkit.block.Dropper;
 import org.bukkit.damage.DamageSource;
 import org.bukkit.damage.DamageType;
 import org.bukkit.entity.Entity;
@@ -12,31 +11,47 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.WindCharge;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.projectiles.ProjectileSource;
 
 import java.util.Collection;
 
 @SuppressWarnings("UnstableApiUsage")
-abstract public class WindChargeReplica implements WindCharge {
+public class WindChargeReplica {
 
-    @Override
+    private final ProjectileSource shooter;
+    private final World world;
+    private final Location location;
+    private final WindCharge entity;
+
+    public WindChargeReplica(
+            ProjectileSource shooter,
+            World world,
+            Location location,
+            WindCharge entity
+    ) {
+        this.shooter = shooter;
+        this.world = world;
+        this.location = location;
+        this.entity = entity;
+    }
+
     public void explode() {
         // Check if it was player thrown
-        if (!(getShooter() instanceof Player) || !(getShooter() instanceof Dispenser)) return;
+        if (!(shooter instanceof Player) || !(shooter instanceof Dispenser)) return;
 
         var config = WindConfiguration.getInstance();
-        World world = getWorld();
         double knockbackMultiplier = config.knockbackMultiplier;
 
         // Knockback and Damage handlers
         Collection<Entity> nearbyEntities = world.getNearbyEntities(
-                getLocation(),
+                location,
                 config.radius,
                 config.radius,
                 config.radius
         );
 
         nearbyEntities.forEach(entity -> {
-            Location sourceLocation = getLocation();
+            Location sourceLocation = location;
             Location targetLocation = entity.getLocation();
             double distance = sourceLocation.distance(targetLocation);
 
@@ -44,7 +59,7 @@ abstract public class WindChargeReplica implements WindCharge {
                 // Players don't take damage from thrown Wind Charges.
                 if (!(entity instanceof Player) && entity instanceof LivingEntity livingEntity) {
                     var damageSource = DamageSource.builder(DamageType.WIND_CHARGE)
-                            .withCausingEntity(this)
+                            .withCausingEntity(entity)
                             .withDirectEntity(entity)
                             .withDamageLocation(sourceLocation)
                             .build();
