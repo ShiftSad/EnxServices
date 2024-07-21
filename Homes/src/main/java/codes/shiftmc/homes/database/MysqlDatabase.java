@@ -8,8 +8,9 @@ import codes.shiftmc.homes.model.User;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -21,6 +22,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class MysqlDatabase extends Database {
+
+    private final Logger logger = LoggerFactory.getLogger(MysqlDatabase.class);
 
     private final HikariDataSource ds;
     private final ExecutorService executorService = Executors.newFixedThreadPool(10); // Adjust the thread pool size as needed
@@ -43,6 +46,7 @@ public class MysqlDatabase extends Database {
 
         // Create tables if they don't exist
         try (var con = ds.getConnection()) {
+            logger.debug("Creating tables if they don't exist");
             // Names need to be 16 + 1 cause of Bedrock
             try (var pst = con.prepareStatement("CREATE TABLE IF NOT EXISTS enx_users (uuid VARCHAR(36) PRIMARY KEY, username VARCHAR(17) NOT NULL)")) {
                 pst.executeUpdate();
@@ -57,6 +61,7 @@ public class MysqlDatabase extends Database {
 
     @Override
     public CompletableFuture<Optional<UserData>> getUser(@NotNull UUID uuid) {
+        logger.debug("Fetching user data for {}", uuid);
         return CompletableFuture.supplyAsync(() -> {
             try (var con = ds.getConnection()) {
                 User user = null;
@@ -91,6 +96,7 @@ public class MysqlDatabase extends Database {
 
     @Override
     public CompletableFuture<Void> createUser(@NotNull User user) {
+        logger.debug("Creating user: {}", user.username());
         return CompletableFuture.runAsync(() -> {
             try (var con = ds.getConnection()) {
                 try (var pst = con.prepareStatement("INSERT INTO enx_users (uuid, username) VALUES (?, ?)")) {
@@ -106,6 +112,7 @@ public class MysqlDatabase extends Database {
 
     @Override
     public CompletableFuture<Void> createIfNotExists(@NotNull User user) {
+        logger.debug("Creating user if not exists: {}", user.username());
         return CompletableFuture.supplyAsync(() -> {
             try (var con = ds.getConnection()) {
                 // Check if user exists
@@ -126,6 +133,7 @@ public class MysqlDatabase extends Database {
 
     @Override
     public CompletableFuture<Void> updateUser(@NotNull UserData userData) {
+        logger.debug("Updating user: {}", userData.user().username());
         return CompletableFuture.runAsync(() -> {
             Connection con = null;
             try {
@@ -165,4 +173,4 @@ public class MysqlDatabase extends Database {
             }
         }, executorService);
     }
-    }
+}
