@@ -1,0 +1,4 @@
+name: Homes
+version: '1.0.0'
+main: codes.shiftmc.homes.Homes
+api-version: '1.21'
