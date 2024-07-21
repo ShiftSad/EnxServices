@@ -1,0 +1,32 @@
+config:
+    # Wind Charge deve afetar blocos?
+    # Apenas blocos dentro da lista blocos-vulneraveis serão afetados.
+    # Cada um com seu comportamento vanilla.
+    # Padrao: true (Recomendado)
+    afetar-blocos: true
+
+    # Machuca entidades?
+    # Padrao: false
+    machuca-entidades: false
+
+    # Multiplicador de knockback
+    # Padrao: 1.22
+    multiplicador-knockback: 1.22
+
+    # Distancia de explosao
+    # Padrao: 1.2
+    distancia-explosao: 1.2
+
+    # Lista de blocos vulneraveis
+    # Recomendado: Nao alterar
+    vulneraveis:
+      - "ENDS_WITH:DOOR&&!STARTS_WITH:IRON"
+      - "ENDS_WITH:TRAPDOOR&&!STARTS_WITH:IRON"
+      - "ENDS_WITH:FENCE_GATE"
+      - "ENDS_WITH:BUTTON"
+      - "IS:LEVER"
+      - "IS:BELL"
+      - "IS:CHORUS_FLOWER"
+      - "IS:POINTED_DRIPSTONE"
+      - "IS:DECORATED_POT"
+      - "ENDS_WITH:CANDLE"
