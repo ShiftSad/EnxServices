@@ -14,7 +14,7 @@ public class HomeCommand {
                 .executesPlayer((sender, args) -> {
                     var user = UserController.getUser(sender.getUniqueId());
                     if (user.isEmpty()) {
-                        sender.sendMessage("An error occurred while loading your data. Please try again later.");
+                        sender.sendMessage(m("error-loading-data"));
                         return;
                     }
 
