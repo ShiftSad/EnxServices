@@ -1,5 +1,6 @@
 package codes.shiftmc.homes;
 
+import codes.shiftmc.homes.commands.HomeCommand;
 import codes.shiftmc.homes.config.DatabaseConfig;
 import codes.shiftmc.homes.database.Database;
 import codes.shiftmc.homes.database.MysqlDatabase;
@@ -62,6 +63,8 @@ public final class Homes extends JavaPlugin {
 
         database = new MysqlDatabase(databaseConfig);
 
+        // Register listeners and commands
         getServer().getPluginManager().registerEvents(new PlayerJoin(database), this);
+        new HomeCommand().get().register(this);
     }
 }

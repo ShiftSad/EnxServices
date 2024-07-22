@@ -16,7 +16,6 @@ import static codes.shiftmc.homes.Language.mm;
 
 public class HomeCommand {
 
-
     public CommandAPICommand get() {
         List<Argument<?>> arguments = new ArrayList<>();
         arguments.add(new StringArgument("home").replaceSuggestions(ArgumentSuggestions.strings(info -> {

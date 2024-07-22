@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -23,7 +24,7 @@ final public class Language {
 
     // TODO -> Add support for placeholders (Urgent)
     public static void loadMessages(Path path) throws IOException {
-        var text = Files.readString(path);
+        var text = Files.readString(path, StandardCharsets.ISO_8859_1);
         Arrays.stream(text.split("\n")).forEach(line -> {
             var split = line.split("=");
             if (split.length != 2) return;
