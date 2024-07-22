@@ -1,0 +1,41 @@
+database:
+  # Disponivel:
+  # Caso necessario, mude a configuracao do banco de dados no arquivo de respectivo nome.
+  # Obs -> Por padrao, a imagem docker ja vem com o MariaDB instalado
+  # - MariaDB (Recomendado)
+  # - SQLite?
+  # - FlatFile?
+  # - Mongo?
+  type: MariaDB
+
+config:
+  # O famoso contador antes do teleporte
+  teleport-cooldown: 5
+  teleport-cancel-on-move: true
+  teleport-cancel-on-damage: true
+
+  # Quantidade de homes que um jogador tem por padrao, caso nao tenha a permissao
+  # homes.limit.number ou homes.limit.bypass
+  homes-limit: 3
+
+visual:
+  particle:
+    # Tipos:
+    # - Circle
+    #   - Particula -> Particle
+    #   - Raio -> Int
+    #   - Animate -> Boolean (Aparecer uma particula por vez)
+    # - Whoosh
+    #   - Particula -> Particle
+    #   - Quantas -> Int
+    # - Image
+    #   - Path -> String
+    #   - Largura -> Int
+    #   - Altura -> Int
+    #   - TamanhoParticula -> Float
+    #   - DividrTamanho -> Float
+    teleport_complete:
+      - "WHOOSH:FLAME:20"
+    # - "CIRCLE:FIREWORK:5:true"
+    teleport_start:
+      - "IMAGE:rick.png:32:32:0.6:10"
