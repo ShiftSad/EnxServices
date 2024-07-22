@@ -1,5 +1,9 @@
 package codes.shiftmc.homes.model;
 
+import org.bukkit.Location;
+
+import static org.bukkit.Bukkit.*;
+
 public record Position(
         String world,
         double x,
@@ -24,5 +28,9 @@ public record Position(
     @Override
     public String toString() {
         return world + ";" + x + ";" + y + ";" + z + ";" + yaw + ";" + pitch;
+    }
+
+    public Location toLocation() {
+        return new Location(getWorld(world), x, y, z, yaw, pitch);
     }
 }
