@@ -24,6 +24,19 @@ public final class Homes extends JavaPlugin {
         var data = getDataFolder();
         data.mkdirs();
 
+        // Load messages
+        try {
+            var messages = new File(data, "messages.properties");
+            if (!messages.exists()) {
+                getLogger().info("Creating default messages.properties");
+                byte[] bytes = getResource("messages.properties").readAllBytes();
+                Files.write(messages.toPath(), bytes);
+            }
+            Language.loadMessages(messages.toPath());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         var mysqlConfigFile = new File(data, "mysql.json");
         if (!mysqlConfigFile.exists()) {
             try {
