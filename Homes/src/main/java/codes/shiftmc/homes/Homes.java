@@ -7,6 +7,7 @@ import codes.shiftmc.homes.database.Database;
 import codes.shiftmc.homes.database.MysqlDatabase;
 import codes.shiftmc.homes.listeners.PlayerJoin;
 import codes.shiftmc.homes.particle.CircleEffect;
+import codes.shiftmc.homes.particle.image.ImageEffect;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dev.jorel.commandapi.CommandAPICommand;
@@ -81,38 +82,53 @@ public final class Homes extends JavaPlugin {
         new HomeCommand().get().register(this);
         new SethomeCommand(database).get().register(this);
 
-        new CommandAPICommand("debugparticle")
+        var circle = new CommandAPICommand("circle")
                 .withArguments(
-                    new StringArgument("type").replaceSuggestions(ArgumentSuggestions.strings(
-                        "circle"
-                    )),
-                    new IntegerArgument("radius"),
-                    new ParticleArgument("particle"),
-                    new BooleanArgument("animation"),
-                    new IntegerArgument("amount").setOptional(true),
-                    new IntegerArgument("delay").setOptional(true)
+                        new IntegerArgument("radius"),
+                        new ParticleArgument("particle"),
+                        new BooleanArgument("animation")
                 )
                 .executesPlayer((sender, args) -> {
-                    String type = (String) args.get("type");
                     Integer radius = (Integer) args.get("radius");
                     ParticleData particle = (ParticleData) args.get("particle");
                     Boolean animation = (Boolean) args.get("animation");
 
-                    if (type == null || radius == null || particle == null || animation == null) {
+                    if (radius == null || particle == null || animation == null) {
                         sender.sendMessage("Something went wrong");
                         return;
                     }
 
-                    if (type.equals("circle")) {
-                        if (animation) {
-                            new CircleEffect(this, radius, particle.particle()).animation(
-                                    sender.getLocation()
-                            );
-                            return;
-                        }
-                        new CircleEffect(this, radius, particle.particle()).spawn(sender.getLocation());
+                    if (animation) {
+                        new CircleEffect(this, radius, particle.particle()).animation(
+                                sender.getLocation()
+                        );
+                        return;
                     }
-                })
+                    new CircleEffect(this, radius, particle.particle()).spawn(sender.getLocation());
+                });
+
+        var image = new CommandAPICommand("image")
+                .withArguments(
+                        new StringArgument("path")
+                )
+                .executesPlayer((sender, args) -> {
+                    String path = (String) args.get("path");
+                    if (path == null) {
+                        sender.sendMessage("Something went wrong");
+                        return;
+                    }
+
+                    var file = new File(path);
+                    if (!file.exists()) {
+                        sender.sendMessage("File does not exist");
+                        return;
+                    }
+
+                    new ImageEffect(this, file);
+                });
+
+        new CommandAPICommand("debugparticle")
+                .withSubcommands(circle, image)
                 .register(this);
     }
 }

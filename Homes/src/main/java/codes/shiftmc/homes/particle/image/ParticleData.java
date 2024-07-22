@@ -5,8 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.Particle;
 
 public record ParticleData(
-        Particle particle,
-        TextColor color,
-        Location location
+        Particle.DustOptions dustOptions,
+        Offset offset
 ) {
 }
