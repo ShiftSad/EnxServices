@@ -70,8 +70,11 @@ public class ImageEffect extends ParticleEffect {
                 return;
             }
 
+            count.incrementAndGet();
+            System.out.println("Count: " + count.get() + " | " + count.get() * Math.PI / 16);
             var rotated = rotate(count.get() * Math.PI / 16);
             iterate(location, rotated);
+
         }, 0L, 5L);
     }
 
@@ -91,13 +94,22 @@ public class ImageEffect extends ParticleEffect {
     private ArrayList<ParticleData> rotate(double amount) {
         var rotated = new ArrayList<ParticleData>();
         for (var particle : particles) {
+            var centerX = particles.stream().mapToDouble(p -> p.offset().x()).average().orElse(0);
+            var centerZ = particles.stream().mapToDouble(p -> p.offset().z()).average().orElse(0);
+
             var offset = particle.offset();
             var x = offset.x();
             var y = offset.y();
             var z = offset.z();
 
-            var newX = x * Math.cos(amount) - z * Math.sin(amount);
-            var newZ = x * Math.sin(amount) + z * Math.cos(amount);
+            var translatedX = x - centerX;
+            var translatedZ = z - centerZ;
+
+            var rotatedX = translatedX * Math.cos(amount) - translatedZ * Math.sin(amount);
+            var rotatedZ = translatedX * Math.sin(amount) + translatedZ * Math.cos(amount);
+
+            var newX = rotatedX + centerX;
+            var newZ = rotatedZ + centerZ;
 
             rotated.add(new ParticleData(particle.dustOptions(), new Offset(newX, y, newZ)));
         }
