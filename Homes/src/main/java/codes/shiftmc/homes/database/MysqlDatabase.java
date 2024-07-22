@@ -64,7 +64,7 @@ public class MysqlDatabase extends Database {
             try (var con = ds.getConnection()) {
                 User user = null;
                 // Fetch user details
-                try (var pst = con.prepareStatement("SELECT 1 FROM enx_users WHERE uuid = ?")) {
+                try (var pst = con.prepareStatement("SELECT * FROM enx_users WHERE uuid = ?")) {
                     pst.setString(1, uuid.toString());
                     try (var rs = pst.executeQuery()) {
                         if (rs.next()) {
@@ -76,7 +76,7 @@ public class MysqlDatabase extends Database {
 
                 // Fetch homes
                 List<Home> homes = new ArrayList<>();
-                try (var pst = con.prepareStatement("SELECT 1 FROM enx_homes WHERE owner = ?")) {
+                try (var pst = con.prepareStatement("SELECT * FROM enx_homes WHERE owner = ?")) {
                     pst.setString(1, uuid.toString());
                     try (var rs = pst.executeQuery()) {
                         while (rs.next()) {
@@ -114,7 +114,7 @@ public class MysqlDatabase extends Database {
         return CompletableFuture.supplyAsync(() -> {
             try (var con = ds.getConnection()) {
                 // Check if user exists
-                try (var pst = con.prepareStatement("SELECT 1 FROM enx_users WHERE uuid = ?")) {
+                try (var pst = con.prepareStatement("SELECT * FROM enx_users WHERE uuid = ?")) {
                     pst.setString(1, user.uuid().toString());
                     try (var rs = pst.executeQuery()) {
                         if (!rs.next()) { // It doesn't

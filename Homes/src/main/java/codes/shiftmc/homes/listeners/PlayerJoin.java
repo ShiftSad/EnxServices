@@ -6,8 +6,14 @@ import codes.shiftmc.homes.model.User;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static codes.shiftmc.homes.Language.m;
 
 public class PlayerJoin implements Listener {
+
+    private final Logger logger = LoggerFactory.getLogger(PlayerJoin.class);
 
     private final Database database;
 
@@ -21,18 +27,23 @@ public class PlayerJoin implements Listener {
         var name = event.getName();
 
         if (UserController.getUser(uuid).isPresent()) {
+            logger.debug("User {} already exists", name);
             return;
         }
 
-        // TODO -> Make a single query
-        database.createIfNotExists(new User(uuid, name));
-        database.getUser(uuid).thenAccept(user -> {
-            if (user.isEmpty()) {
-                event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, "An error occurred while loading your data. Please try again later.");
-                return;
-            }
+        var user = new User(uuid, name);
+        // Ensure the user exists
+        database.createIfNotExists(user).thenRun(() -> {
+            // Load user data
+            database.getUser(uuid).thenAccept(userData -> {
+                if (userData.isEmpty()) {
+                    event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, m("error-loading-data"));
+                    return;
+                }
 
-            UserController.createUser(user.get());
+                UserController.createUser(userData.get());
+                logger.debug("User {} loaded", name);
+            });
         });
     }
 }
