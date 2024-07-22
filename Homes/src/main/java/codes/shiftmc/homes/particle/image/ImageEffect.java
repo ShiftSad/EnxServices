@@ -12,6 +12,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ImageEffect extends ParticleEffect {
 
@@ -38,6 +39,9 @@ public class ImageEffect extends ParticleEffect {
                     int green = (pixel >> 8) & 0xff;
                     int blue = (pixel) & 0xff;
 
+                    // Ignore black or pixels near black
+                    if (red < 10 && green < 10 && blue < 10) { continue; }
+
                     var dustOptions = new Particle.DustOptions(Color.fromARGB(alpha, red, green, blue), 1);
                     var offset = new Offset(x, 0, y);
 
@@ -49,18 +53,7 @@ public class ImageEffect extends ParticleEffect {
 
     @Override
     public void spawn(Location location) {
-        for (var particle : particles) {
-            var dustOptions = particle.dustOptions();
-            var offset = particle.offset();
-
-            var x = offset.x();
-            var y = offset.y();
-            var z = offset.z();
-
-            location.add(x, y, z);
-            location.getWorld().spawnParticle(Particle.DUST, location, 0, dustOptions);
-            location.subtract(x, y, z);
-        }
+        iterate(location, particles);
     }
 
     @Override
@@ -70,6 +63,44 @@ public class ImageEffect extends ParticleEffect {
 
     @Override
     public void animation(Location location) {
-        // NO!
+        AtomicInteger count = new AtomicInteger();
+        Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+            if (count.get() > 10 * 5) {
+                count.set(0);
+                return;
+            }
+
+            var rotated = rotate(count.get() * Math.PI / 16);
+            iterate(location, rotated);
+        }, 0L, 5L);
+    }
+
+    private void iterate(Location location, ArrayList<ParticleData> rotated) {
+        for (var particle : rotated) {
+            var dustOptions = particle.dustOptions();
+            var offset = particle.offset();
+
+            var x = offset.x() / 10;
+            var y = offset.y() / 10;
+            var z = offset.z() / 10;
+
+            location.getWorld().spawnParticle(Particle.DUST, location.clone().add(x, y, z), 0, dustOptions);
+        }
+    }
+
+    private ArrayList<ParticleData> rotate(double amount) {
+        var rotated = new ArrayList<ParticleData>();
+        for (var particle : particles) {
+            var offset = particle.offset();
+            var x = offset.x();
+            var y = offset.y();
+            var z = offset.z();
+
+            var newX = x * Math.cos(amount) - z * Math.sin(amount);
+            var newZ = x * Math.sin(amount) + z * Math.cos(amount);
+
+            rotated.add(new ParticleData(particle.dustOptions(), new Offset(newX, y, newZ)));
+        }
+        return rotated;
     }
 }

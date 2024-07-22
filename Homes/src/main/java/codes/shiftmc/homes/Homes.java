@@ -124,7 +124,7 @@ public final class Homes extends JavaPlugin {
                         return;
                     }
 
-                    new ImageEffect(this, file);
+                    new ImageEffect(this, file).spawn(sender.getLocation(), 100);
                 });
 
         new CommandAPICommand("debugparticle")
