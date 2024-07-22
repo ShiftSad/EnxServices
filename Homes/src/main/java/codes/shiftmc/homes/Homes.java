@@ -109,11 +109,20 @@ public final class Homes extends JavaPlugin {
 
         var image = new CommandAPICommand("image")
                 .withArguments(
-                        new StringArgument("path")
+                        new StringArgument("path"),
+                        new IntegerArgument("width"),
+                        new IntegerArgument("height"),
+                        new FloatArgument("size"),
+                        new FloatArgument("divide")
                 )
                 .executesPlayer((sender, args) -> {
                     String path = (String) args.get("path");
-                    if (path == null) {
+                    Integer width = (Integer) args.get("width");
+                    Integer height = (Integer) args.get("height");
+                    Float size = (Float) args.get("size");
+                    Float divide = (Float) args.get("divide");
+
+                    if (path == null || width == null || height == null || size == null || divide == null) {
                         sender.sendMessage("Something went wrong");
                         return;
                     }
@@ -124,7 +133,7 @@ public final class Homes extends JavaPlugin {
                         return;
                     }
 
-                    new ImageEffect(this, file).animation(sender.getLocation());
+                    new ImageEffect(this, file, width, height, size, divide).animation(sender.getLocation());
                 });
 
         new CommandAPICommand("debugparticle")
