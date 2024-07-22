@@ -21,6 +21,7 @@ final public class Language {
 
     private Language() {}
 
+    // TODO -> Add support for placeholders (Urgent)
     public static void loadMessages(Path path) throws IOException {
         var text = Files.readString(path);
         Arrays.stream(text.split("\n")).forEach(line -> {
@@ -39,5 +40,13 @@ final public class Language {
 
     public static Component getMessage(String key) {
         return messages.get(key);
+    }
+    
+    public static Component m(String key) {
+        return getMessage(key);
+    }
+
+    public static Component mm(String text) {
+        return miniMessage.deserialize(text);
     }
 }
