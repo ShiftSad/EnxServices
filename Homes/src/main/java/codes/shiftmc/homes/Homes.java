@@ -49,7 +49,12 @@ public final class Homes extends JavaPlugin {
                                 "password",
                                 "database",
                                 "host",
-                                3306
+                                3306,
+                                10,
+                                60000,
+                                1000,
+                                10000,
+                                2000
                         ))
                 );
             } catch (IOException e) {throw new RuntimeException(e); }

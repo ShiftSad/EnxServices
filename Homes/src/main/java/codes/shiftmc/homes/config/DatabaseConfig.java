@@ -5,5 +5,11 @@ public record DatabaseConfig(
         String password,
         String database,
         String host,
-        int port
+        int port,
+
+        int maximumPoolSize,
+        int maxLifeTime,
+        int keepaliveTime,
+        int connectionTimeout,
+        int leakDetectionThreshold
 ) { }

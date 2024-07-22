@@ -34,9 +34,11 @@ public class MysqlDatabase extends Database {
         hikariConfig.setUsername(config.username());
         hikariConfig.setPassword(config.password());
         hikariConfig.setJdbcUrl("jdbc:mysql://" + config.host() + ":" + config.port() + "/" + config.database());
-        hikariConfig.setMaximumPoolSize(10);
-        hikariConfig.setConnectionTimeout(10000);
-        hikariConfig.setLeakDetectionThreshold(10000);
+        hikariConfig.setMaximumPoolSize(config.maximumPoolSize());
+        hikariConfig.setMaxLifetime(config.maxLifeTime());
+        hikariConfig.setKeepaliveTime(config.keepaliveTime());
+        hikariConfig.setConnectionTimeout(config.connectionTimeout());
+        hikariConfig.setLeakDetectionThreshold(config.leakDetectionThreshold());
         hikariConfig.setPoolName("HomesPool");
         hikariConfig.addDataSourceProperty("cachePrepStmts", "true");
         hikariConfig.addDataSourceProperty("prepStmtCacheSize", "250");
@@ -51,8 +53,7 @@ public class MysqlDatabase extends Database {
             try (var pst = con.prepareStatement("CREATE TABLE IF NOT EXISTS enx_users (uuid VARCHAR(36) PRIMARY KEY, username VARCHAR(17) NOT NULL)")) {
                 pst.executeUpdate();
             }
-            try (var pst = con.prepareStatement("CREATE TABLE IF NOT EXISTS enx_homes (name VARCHAR(17) NOT NULL, owner VARCHAR(36) NOT NULL, position VARCHAR(64) NOT NULL, PRIMARY KEY (name, owner))")) {
-                pst.executeUpdate();
+            try (var pst = con.prepareStatement("CREATE TABLE IF NOT EXISTS enx_homes (name VARCHAR(17) NOT NULL, owner VARCHAR(36) NOT NULL, position VARCHAR(255) NOT NULL, PRIMARY KEY (name, owner))")) {                pst.executeUpdate();
             }
         } catch (SQLException e) { throw new RuntimeException("Failed to create tables", e); }
     }
@@ -153,6 +154,7 @@ public class MysqlDatabase extends Database {
             } catch (SQLException e) {
                 if (con != null) {
                     try {
+                        logger.error("Failed to update user homes for user: {}", userData.user().username(), e);
                         con.rollback(); // Rollback transaction in case of error
                     } catch (SQLException ex) {
                         throw new RuntimeException("Failed to rollback transaction", ex);
@@ -165,7 +167,7 @@ public class MysqlDatabase extends Database {
                         con.setAutoCommit(true); // Reset auto-commit
                         con.close();
                     } catch (SQLException e) {
-                        // Handle or log error
+                        logger.error("Failed to reset auto-commit or close connection for user: {}", userData.user().username(), e);
                     }
                 }
             }
