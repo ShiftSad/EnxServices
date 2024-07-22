@@ -26,7 +26,7 @@ public class HomeCommand {
             return new String[0];
         })));
 
-        return new CommandAPICommand("home")
+        return new CommandAPICommand("enxhome")
                 .withPermission("homes.command.home")
                 .withOptionalArguments(arguments)
                 .executesPlayer((sender, args) -> {

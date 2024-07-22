@@ -9,8 +9,6 @@ public record User(
         @NotNull String username
 ) implements Comparable<User> {
 
-
-
     @Override
     public int compareTo(@NotNull User o) {
         return 0;

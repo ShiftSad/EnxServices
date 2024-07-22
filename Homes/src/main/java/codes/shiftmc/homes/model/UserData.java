@@ -6,4 +6,9 @@ public record UserData(
         User user,
         List<Home> homes
 ) {
+
+    public UserData addHome(Home home) {
+        homes.add(home);
+        return this;
+    }
 }

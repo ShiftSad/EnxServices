@@ -25,6 +25,17 @@ public record Position(
         );
     }
 
+    public static Position fromLocation(Location location) {
+        return new Position(
+                location.getWorld().getName(),
+                location.getX(),
+                location.getY(),
+                location.getZ(),
+                location.getYaw(),
+                location.getPitch()
+        );
+    }
+
     @Override
     public String toString() {
         return world + ";" + x + ";" + y + ";" + z + ";" + yaw + ";" + pitch;
