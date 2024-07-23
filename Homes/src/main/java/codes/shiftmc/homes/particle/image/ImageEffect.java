@@ -22,6 +22,9 @@ public class ImageEffect extends ParticleEffect {
 
     private final ArrayList<ParticleData> particles = new ArrayList<>();
 
+    private final double centerX;
+    private final double centerZ;
+
     public ImageEffect(JavaPlugin plugin, File file, int width, int height, float size, float divide) {
         this.plugin = plugin;
         this.divide = divide;
@@ -49,6 +52,9 @@ public class ImageEffect extends ParticleEffect {
                 }
             }
         } catch (IOException e) { throw new RuntimeException(e); }
+
+        centerX = particles.stream().mapToDouble(p -> p.offset().x()).average().orElse(0);
+        centerZ = particles.stream().mapToDouble(p -> p.offset().z()).average().orElse(0);
     }
 
     @Override
@@ -89,9 +95,9 @@ public class ImageEffect extends ParticleEffect {
             var dustOptions = particle.dustOptions();
             var offset = particle.offset();
 
-            var x = offset.x() / divide;
+            var x = (offset.x() - centerX) / divide;
             var y = offset.y() / divide;
-            var z = offset.z() / divide;
+            var z = (offset.z() - centerZ) / divide;
 
             location.getWorld().spawnParticle(Particle.DUST, location.clone().add(x, y, z), 0, dustOptions);
         }
@@ -100,9 +106,6 @@ public class ImageEffect extends ParticleEffect {
     private ArrayList<ParticleData> rotate(double amount) {
         var rotated = new ArrayList<ParticleData>();
         for (var particle : particles) {
-            var centerX = particles.stream().mapToDouble(p -> p.offset().x()).average().orElse(0);
-            var centerZ = particles.stream().mapToDouble(p -> p.offset().z()).average().orElse(0);
-
             var offset = particle.offset();
             var x = offset.x();
             var y = offset.y();
