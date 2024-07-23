@@ -1,24 +1,49 @@
 package codes.shiftmc.homes;
 
 import codes.shiftmc.homes.config.MainConfiguration;
-import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerVelocityEvent;
 
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static codes.shiftmc.homes.Language.mm;
 
 final public class TeleportTask implements Listener {
 
     private static final HashMap<UUID, PlayerTeleport> tasks = new HashMap<>();
     private static final MainConfiguration configuration = MainConfiguration.getInstance();
 
-    private TeleportTask() {}
+    private TeleportTask() {
+        var plugin = Homes.getPlugin(Homes.class);
+        var tick = new AtomicInteger(0);
+        Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+            // Remove expired tasks and run task tick
+            tasks.entrySet().removeIf(entry -> {
+                if (System.currentTimeMillis() >= entry.getValue().time) {
+                    entry.getValue().future.complete(true);
+                    return true;
+                }
+                return false;
+            });
+
+            // Run task tick
+            if (tick.incrementAndGet() >= 20) {
+                tick.set(0);
+                tasks.values().forEach(teleport -> teleport.player.sendActionBar(mm(
+                        String.format("<color:#0affe7>Teleportando em <bold>%s</bold> segundos...</color>", Math.floor((teleport.time - System.currentTimeMillis()) / 1000.0) + 1)
+                )));
+            }
+        }, 0, 1L);
+    }
 
     private record PlayerTeleport(
             Player player,
@@ -26,8 +51,7 @@ final public class TeleportTask implements Listener {
             CompletableFuture<Boolean> future
     ) {}
 
-    @Getter
-    private static final TeleportTask instance = new TeleportTask();
+    public static final TeleportTask instance = new TeleportTask();
 
     public static CompletableFuture<Boolean> createTeleportTask(
             Player player
@@ -42,18 +66,12 @@ final public class TeleportTask implements Listener {
                 future
         ));
 
-        Bukkit.getScheduler().runTaskLater(Homes.getPlugin(Homes.class), () -> {
-            PlayerTeleport teleport = tasks.remove(player.getUniqueId());
-            if (teleport != null && System.currentTimeMillis() >= teleport.time) {
-                teleport.future.complete(true);
-            }
-        }, delay / 50 + 1); // Convert milliseconds to ticks + 1 for same measurement
-
         return future;
     }
 
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
+        if (!event.hasChangedBlock()) return;
         if (!configuration.config.teleportCancelOnMove()) return;
         PlayerTeleport teleport = tasks.remove(event.getPlayer().getUniqueId());
         if (teleport != null) {
@@ -72,4 +90,8 @@ final public class TeleportTask implements Listener {
         }
     }
 
+    @EventHandler
+    public void onQuit(PlayerQuitEvent event) {
+        tasks.remove(event.getPlayer().getUniqueId());
+    }
 }

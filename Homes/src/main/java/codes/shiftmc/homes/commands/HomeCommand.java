@@ -3,12 +3,15 @@ package codes.shiftmc.homes.commands;
 import codes.shiftmc.homes.TeleportTask;
 import codes.shiftmc.homes.UserController;
 import codes.shiftmc.homes.model.Home;
+import codes.shiftmc.homes.particle.image.ImageEffect;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.Argument;
 import dev.jorel.commandapi.arguments.ArgumentSuggestions;
 import dev.jorel.commandapi.arguments.StringArgument;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +19,12 @@ import static codes.shiftmc.homes.Language.m;
 import static codes.shiftmc.homes.Language.mm;
 
 public class HomeCommand {
+
+    private final JavaPlugin plugin;
+
+    public HomeCommand(JavaPlugin plugin) {
+        this.plugin = plugin;
+    }
 
     public CommandAPICommand get() {
         List<Argument<?>> arguments = new ArrayList<>();
@@ -52,23 +61,13 @@ public class HomeCommand {
                             return;
                         }
 
-                        sender.teleportAsync(home.get().position().toLocation()).thenRun(() -> {
-                            sender.sendMessage(m("teleport-success"));
-                        });
+                        teleportTask(sender, home.get());
                         return;
                     }
 
                     if (homes.size() == 1) {
                         var home = homes.getFirst();
-                        TeleportTask.createTeleportTask(sender).thenAccept(success -> {
-                            if (success) {
-                                sender.teleportAsync(home.position().toLocation()).thenRun(() -> {
-                                    sender.sendMessage(m("teleport-success"));
-                                });
-                                return;
-                            }
-                            sender.sendMessage(m("teleport-cancelled"));
-                        });
+                        teleportTask(sender, home);
                         return;
                     }
 
@@ -78,5 +77,20 @@ public class HomeCommand {
                             home.name(), home.name()
                     ))));
                 });
+    }
+
+    private void teleportTask(Player player, Home home) {
+        var image = new ImageEffect(plugin, new File("rick.png"), 32, 32, 0.6f, 10.0f);
+        image.animationStart(player.getLocation());
+        TeleportTask.createTeleportTask(player).thenAccept(success -> {
+            image.animationEnd();
+            if (success) {
+                player.teleportAsync(home.position().toLocation()).thenRun(() -> {
+                    player.sendMessage(m("teleport-success"));
+                });
+                return;
+            }
+            player.sendMessage(m("teleport-cancelled"));
+        });
     }
 }

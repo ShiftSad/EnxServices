@@ -82,11 +82,10 @@ public final class Homes extends JavaPlugin {
 
         // Register listeners and commands
         getServer().getPluginManager().registerEvents(new PlayerJoin(database), this);
-        new HomeCommand().get().register(this);
+        getServer().getPluginManager().registerEvents(TeleportTask.instance, this);
+        new HomeCommand(this).get().register(this);
         new SethomeCommand(database).get().register(this);
         debugCommands();
-
-
     }
 
     public void debugCommands() {
