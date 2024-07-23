@@ -2,7 +2,7 @@ package codes.shiftmc.homes.model;
 
 import org.bukkit.Location;
 
-import static org.bukkit.Bukkit.*;
+import static org.bukkit.Bukkit.getWorld;
 
 public record Position(
         String world,
