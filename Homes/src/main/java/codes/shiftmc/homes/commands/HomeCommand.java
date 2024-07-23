@@ -2,12 +2,15 @@ package codes.shiftmc.homes.commands;
 
 import codes.shiftmc.homes.TeleportTask;
 import codes.shiftmc.homes.UserController;
+import codes.shiftmc.homes.config.MainConfiguration;
 import codes.shiftmc.homes.model.Home;
+import codes.shiftmc.homes.particle.ParticleEffect;
 import codes.shiftmc.homes.particle.image.ImageEffect;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.Argument;
 import dev.jorel.commandapi.arguments.ArgumentSuggestions;
 import dev.jorel.commandapi.arguments.StringArgument;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -80,17 +83,29 @@ public class HomeCommand {
     }
 
     private void teleportTask(Player player, Home home) {
-        var image = new ImageEffect(plugin, new File("rick.png"), 32, 32, 0.6f, 10.0f);
-        image.animationStart(player.getLocation());
+        var teleportStart = MainConfiguration.getInstance().visual.particle().teleportStartEffects();
+        var teleportComplete = MainConfiguration.getInstance().visual.particle().teleportCompleteEffects();
+
+        teleportStart.forEach(effect -> playParticle(player.getLocation(), effect, false));
         TeleportTask.createTeleportTask(player).thenAccept(success -> {
-            image.animationEnd();
             if (success) {
-                player.teleportAsync(home.position().toLocation()).thenRun(() -> {
-                    player.sendMessage(m("teleport-success"));
-                });
+                teleportComplete.forEach(effect -> playParticle(home.position().toLocation(), effect, true));
+                player.teleportAsync(home.position().toLocation()).thenRun(() -> player.sendMessage(m("teleport-success")));
                 return;
             }
             player.sendMessage(m("teleport-cancelled"));
         });
+    }
+
+    private void playParticle(Location location, ParticleEffect effect, Boolean end) {
+        if (end) {
+            effect.animationEnd();
+            return;
+        }
+
+        if (effect.isAnimated()) {
+            effect.animationStart(location);
+        }
+        else effect.spawn(location);
     }
 }

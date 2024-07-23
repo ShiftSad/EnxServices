@@ -36,6 +36,6 @@ visual:
     #   - DividrTamanho -> Float
     teleport_complete:
       - "WHOOSH:FLAME:20"
-    # - "CIRCLE:FIREWORK:5:true"
+      - "CIRCLE:FIREWORK:5:true"
     teleport_start:
       - "IMAGE:rick.png:32:32:0.6:10"

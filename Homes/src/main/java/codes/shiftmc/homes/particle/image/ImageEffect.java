@@ -67,6 +67,11 @@ public class ImageEffect extends ParticleEffect {
         for (int i = 0; i < ticks; i++) { Bukkit.getScheduler().runTaskLater(plugin, () -> spawn(location), i); }
     }
 
+    @Override
+    public boolean isAnimated() {
+        return false;
+    }
+
     private int taskId = -1;
 
     @Override

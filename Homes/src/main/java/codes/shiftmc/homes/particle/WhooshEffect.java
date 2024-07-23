@@ -29,6 +29,11 @@ public class WhooshEffect extends ParticleEffect {
     }
 
     @Override
+    public boolean isAnimated() {
+        return false;
+    }
+
+    @Override
     public void animationStart(Location location) {
         // Nah
     }
