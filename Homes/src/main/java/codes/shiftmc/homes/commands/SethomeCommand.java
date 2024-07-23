@@ -13,6 +13,7 @@ import java.util.UUID;
 
 import static codes.shiftmc.homes.Language.m;
 import static codes.shiftmc.homes.Language.mm;
+import static codes.shiftmc.homes.config.MainConfiguration.getInstance;
 
 public class SethomeCommand {
 
@@ -89,5 +90,5 @@ public class SethomeCommand {
                 .filter(perm -> perm.getPermission().startsWith("homes.limit."))
                 .mapToInt(perm -> Integer.parseInt(perm.getPermission().split("\\.")[2]))
                 .max()
-                .orElse(0)) > UserController.getUser(player.getUniqueId()).map(user -> user.homes().size()).orElse(0);
+                .orElse(getInstance().config.homesLimit())) > UserController.getUser(player.getUniqueId()).map(user -> user.homes().size()).orElse(0);
     }}

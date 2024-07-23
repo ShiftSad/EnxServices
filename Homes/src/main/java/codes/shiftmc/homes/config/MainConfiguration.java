@@ -39,7 +39,7 @@ public final class MainConfiguration {
     public record Config(
             Integer teleportCooldown,
             Boolean teleportCancelOnMove,
-            Boolean teleportCancelOnDamange,
+            Boolean teleportCancelOnDamage,
             Integer homesLimit
     ) { }
 
