@@ -3,6 +3,7 @@ package codes.shiftmc.homes;
 import codes.shiftmc.homes.commands.HomeCommand;
 import codes.shiftmc.homes.commands.SethomeCommand;
 import codes.shiftmc.homes.config.DatabaseConfig;
+import codes.shiftmc.homes.config.MainConfiguration;
 import codes.shiftmc.homes.database.Database;
 import codes.shiftmc.homes.database.MysqlDatabase;
 import codes.shiftmc.homes.listeners.PlayerJoin;
@@ -28,11 +29,16 @@ public final class Homes extends JavaPlugin {
 
     public Database database;
     public DatabaseConfig databaseConfig;
+    public MainConfiguration configuration;
 
     @Override
     public void onEnable() {
         var data = getDataFolder();
         data.mkdirs();
+
+        // Load configuration
+        saveDefaultConfig();
+        MainConfiguration.fromYaml(getConfig());
 
         // Load messages
         try {
@@ -81,7 +87,12 @@ public final class Homes extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerJoin(database), this);
         new HomeCommand().get().register(this);
         new SethomeCommand(database).get().register(this);
+        debugCommands();
 
+
+    }
+
+    public void debugCommands() {
         var circle = new CommandAPICommand("circle")
                 .withArguments(
                         new IntegerArgument("radius"),
