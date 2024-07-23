@@ -105,7 +105,7 @@ public final class Homes extends JavaPlugin {
                         return;
                     }
 
-                    var circleEffect = new CircleEffect(this, radius, particle.particle());
+                    var circleEffect = new CircleEffect(this, radius, particle.particle(), animation);
                     if (animation) {
                         circleEffect.animationStart(
                                 sender.getLocation()

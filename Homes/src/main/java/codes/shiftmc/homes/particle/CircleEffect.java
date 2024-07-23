@@ -1,5 +1,6 @@
 package codes.shiftmc.homes.particle;
 
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -14,10 +15,14 @@ public class CircleEffect extends ParticleEffect {
     private final double radius;
     private final Particle particle;
 
-    public CircleEffect(JavaPlugin plugin, double radius, Particle particle) {
+    @Getter
+    private final Boolean animate;
+
+    public CircleEffect(JavaPlugin plugin, double radius, Particle particle, Boolean animate) {
         this.plugin = plugin;
         this.radius = radius;
         this.particle = particle;
+        this.animate = animate;
     }
 
     @Override
