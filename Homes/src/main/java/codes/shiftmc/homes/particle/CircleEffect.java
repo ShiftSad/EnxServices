@@ -4,7 +4,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class CircleEffect extends ParticleEffect {
 
@@ -31,32 +32,25 @@ public class CircleEffect extends ParticleEffect {
         for (int i = 0; i < ticks; i++) { Bukkit.getScheduler().runTaskLater(plugin, () -> spawn(location), i); }
     }
 
+    private int taskId = -1;
+
     @Override
-    public void animation(Location location) {
-        new BukkitRunnable() {
-            final double step = Math.PI / 16;
-            int count = 0;
+    public void animationStart(Location location) {
+        AtomicInteger angle = new AtomicInteger();
+        taskId = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+            double radians = Math.toRadians(angle.getAndAdd(10) % 360);
+            iterate(radians, location);
+        }, 0L, 1L).getTaskId();
+    }
 
-            @Override
-            public void run() {
-                if (count >= (2 * Math.PI) / step) {
-                    this.cancel();
-                    return;
-                }
-
-                double angle = count * step;
-                iterate(angle, location);
-
-                count++;
-            }
-        }.runTaskTimer(plugin, 0L, 1L);
+    @Override
+    public void animationEnd() {
+        Bukkit.getScheduler().cancelTask(taskId);
     }
 
     private void iterate(double angle, Location location) {
         double x = Math.cos(angle) * radius;
         double z = Math.sin(angle) * radius;
-        location.add(x, 0, z);
-        location.getWorld().spawnParticle(particle, location, 0);
-        location.subtract(x, 0, z);
+        location.getWorld().spawnParticle(particle, location.clone().add(x, 0, z), 0);
     }
 }

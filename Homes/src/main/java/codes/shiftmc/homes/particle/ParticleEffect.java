@@ -8,5 +8,6 @@ abstract public class ParticleEffect {
 
     abstract public void spawn(Location location, int tick);
 
-    abstract public void animation(Location location);
+    abstract public void animationStart(Location location);
+    abstract public void animationEnd();
 }

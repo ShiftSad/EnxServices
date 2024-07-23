@@ -14,14 +14,12 @@ import com.google.gson.GsonBuilder;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import dev.jorel.commandapi.wrappers.ParticleData;
-import org.bukkit.Particle;
-import org.bukkit.entity.Player;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Optional;
 
 public final class Homes extends JavaPlugin {
 
@@ -29,7 +27,6 @@ public final class Homes extends JavaPlugin {
 
     public Database database;
     public DatabaseConfig databaseConfig;
-    public MainConfiguration configuration;
 
     @Override
     public void onEnable() {
@@ -109,13 +106,15 @@ public final class Homes extends JavaPlugin {
                         return;
                     }
 
+                    var circleEffect = new CircleEffect(this, radius, particle.particle());
                     if (animation) {
-                        new CircleEffect(this, radius, particle.particle()).animation(
+                        circleEffect.animationStart(
                                 sender.getLocation()
                         );
+                        Bukkit.getScheduler().runTaskLater(this, circleEffect::animationEnd, 20 * 5);
                         return;
                     }
-                    new CircleEffect(this, radius, particle.particle()).spawn(sender.getLocation());
+                    circleEffect.spawn(sender.getLocation());
                 });
 
         var image = new CommandAPICommand("image")
@@ -144,7 +143,7 @@ public final class Homes extends JavaPlugin {
                         return;
                     }
 
-                    new ImageEffect(this, file, width, height, size, divide).animation(sender.getLocation());
+                    new ImageEffect(this, file, width, height, size, divide).animationStart(sender.getLocation());
                 });
 
         new CommandAPICommand("debugparticle")

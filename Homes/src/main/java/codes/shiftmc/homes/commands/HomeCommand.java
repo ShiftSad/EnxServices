@@ -1,5 +1,6 @@
 package codes.shiftmc.homes.commands;
 
+import codes.shiftmc.homes.TeleportTask;
 import codes.shiftmc.homes.UserController;
 import codes.shiftmc.homes.model.Home;
 import dev.jorel.commandapi.CommandAPICommand;
@@ -59,8 +60,14 @@ public class HomeCommand {
 
                     if (homes.size() == 1) {
                         var home = homes.getFirst();
-                        sender.teleportAsync(home.position().toLocation()).thenRun(() -> {
-                            sender.sendMessage(m("teleport-success"));
+                        TeleportTask.createTeleportTask(sender).thenAccept(success -> {
+                            if (success) {
+                                sender.teleportAsync(home.position().toLocation()).thenRun(() -> {
+                                    sender.sendMessage(m("teleport-success"));
+                                });
+                                return;
+                            }
+                            sender.sendMessage(m("teleport-cancelled"));
                         });
                         return;
                     }

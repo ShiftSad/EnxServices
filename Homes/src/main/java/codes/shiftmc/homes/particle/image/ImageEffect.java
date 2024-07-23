@@ -17,7 +17,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class ImageEffect extends ParticleEffect {
 
-    private final File file;
     private final JavaPlugin plugin;
     private final float divide;
 
@@ -25,7 +24,6 @@ public class ImageEffect extends ParticleEffect {
 
     public ImageEffect(JavaPlugin plugin, File file, int width, int height, float size, float divide) {
         this.plugin = plugin;
-        this.file = file;
         this.divide = divide;
 
         try {
@@ -63,10 +61,12 @@ public class ImageEffect extends ParticleEffect {
         for (int i = 0; i < ticks; i++) { Bukkit.getScheduler().runTaskLater(plugin, () -> spawn(location), i); }
     }
 
+    private int taskId = -1;
+
     @Override
-    public void animation(Location location) {
+    public void animationStart(Location location) {
         AtomicInteger count = new AtomicInteger();
-        Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+        taskId = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
             if (count.get() > 10 * 5) {
                 count.set(0);
                 return;
@@ -76,7 +76,12 @@ public class ImageEffect extends ParticleEffect {
             var rotated = rotate(count.get() * Math.PI / 16);
             iterate(location, rotated);
 
-        }, 0L, 2L);
+        }, 0L, 2L).getTaskId();
+    }
+
+    @Override
+    public void animationEnd() {
+        Bukkit.getScheduler().cancelTask(taskId);
     }
 
     private void iterate(Location location, ArrayList<ParticleData> rotated) {
