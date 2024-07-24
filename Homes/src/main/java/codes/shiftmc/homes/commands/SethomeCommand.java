@@ -24,7 +24,7 @@ public class SethomeCommand {
     }
 
     public CommandAPICommand get() {
-        return new CommandAPICommand("enxsethome")
+        return new CommandAPICommand("sethome")
                 .withPermission("homes.command.sethome")
                 .withOptionalArguments(new StringArgument("home"))
                 .executesPlayer((sender, args) -> {

@@ -39,7 +39,7 @@ public class HomeCommand {
             return new String[0];
         })));
 
-        return new CommandAPICommand("enxhome")
+        return new CommandAPICommand("home")
                 .withPermission("homes.command.home")
                 .withOptionalArguments(arguments)
                 .executesPlayer((sender, args) -> {
@@ -76,7 +76,7 @@ public class HomeCommand {
 
                     sender.sendMessage(mm(String.format("<color:#5bde82>Homes de %s</color>\n", sender.getName())));
                     homes.forEach(home -> sender.sendMessage(mm(String.format(
-                            "<color:#5bde82>⇒ <click:run_command:'/enxhome %s'><color:#0affe7>%s</color></click></color>",
+                            "<color:#5bde82>⇒ <click:run_command:'/home %s'><color:#0affe7>%s</color></click></color>",
                             home.name(), home.name()
                     ))));
                 });
