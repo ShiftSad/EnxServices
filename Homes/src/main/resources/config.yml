@@ -5,7 +5,6 @@ database:
   # - MariaDB (Recomendado)
   # - SQLite?
   # - FlatFile?
-  # - Mongo?
   type: MariaDB
 
 config:
