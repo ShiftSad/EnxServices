@@ -25,7 +25,7 @@ visual:
     #   - Particula -> Particle
     #   - Raio -> Int
     #   - Animate -> Boolean (Aparecer uma particula por vez)
-    # - Image
+    # - Image: Pixels pretos (valor rgb menos de 20 em todas as cores) serao transparentes
     #   - Path -> String
     #   - Largura -> Int
     #   - Altura -> Int
