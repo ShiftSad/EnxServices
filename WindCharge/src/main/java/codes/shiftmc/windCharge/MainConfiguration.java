@@ -12,8 +12,8 @@ public final class MainConfiguration {
     public MainConfiguration(
             Configuration configuration
     ) {
-        this.knockbackMultiplier = configuration.getDouble("knockbackMultiplier");
-        this.velocityMultiplier = configuration.getDouble("velocityMultiplier");
+        this.knockbackMultiplier = configuration.getDouble("config.multiplicador-knockback");
+        this.velocityMultiplier = configuration.getDouble("config.multiplicador-velocidade");
 
         MainConfiguration.configuration = this;
     }
