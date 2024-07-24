@@ -34,8 +34,8 @@ visual:
     #   - Altura -> Int
     #   - TamanhoParticula -> Float
     #   - DividrTamanho -> Float
-    teleport_complete:
+    teleport-complete:
       - "WHOOSH:FLAME:20"
-      - "CIRCLE:FIREWORK:5:true"
-    teleport_start:
+    # - "CIRCLE:FIREWORK:5:true"
+    teleport-start:
       - "IMAGE:rick.png:32:32:0.6:10"
