@@ -50,4 +50,8 @@ final public class Language {
     public static Component mm(String text) {
         return miniMessage.deserialize(text);
     }
+
+    public static Component mm(String text, Object... args) {
+        return miniMessage.deserialize(String.format(text, args));
+    }
 }

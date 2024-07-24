@@ -1,5 +1,6 @@
 package codes.shiftmc.homes;
 
+import codes.shiftmc.homes.commands.DelhomeCommand;
 import codes.shiftmc.homes.commands.HomeCommand;
 import codes.shiftmc.homes.commands.SethomeCommand;
 import codes.shiftmc.homes.config.DatabaseConfig;
@@ -85,6 +86,7 @@ public final class Homes extends JavaPlugin {
         getServer().getPluginManager().registerEvents(TeleportTask.instance, this);
         new HomeCommand().get().register(this);
         new SethomeCommand(database).get().register(this);
+        new DelhomeCommand(database).get().register(this);
         debugCommands();
     }
 

@@ -139,9 +139,35 @@ public class MysqlDatabase extends Database {
                 con = ds.getConnection();
                 con.setAutoCommit(false); // Start transaction
 
+                // Fetch current homes from the database
+                List<Home> currentHomes = new ArrayList<>();
+                try (var pst = con.prepareStatement("SELECT * FROM enx_homes WHERE owner = ?")) {
+                    pst.setString(1, userData.user().uuid().toString());
+                    try (var rs = pst.executeQuery()) {
+                        while (rs.next()) {
+                            Position position = Position.fromString(rs.getString("position"));
+                            currentHomes.add(new Home(rs.getString("name"), UUID.fromString(rs.getString("owner")), position));
+                        }
+                    }
+                }
+
+                // Identify homes to be removed
+                List<Home> homesToRemove = new ArrayList<>(currentHomes);
+                homesToRemove.removeAll(userData.homes());
+
+                // Remove homes that are no longer present in userData
+                String deleteSql = "DELETE FROM enx_homes WHERE name = ? AND owner = ?";
+                try (var pst = con.prepareStatement(deleteSql)) {
+                    for (Home home : homesToRemove) {
+                        pst.setString(1, home.name());
+                        pst.setString(2, home.owner().toString());
+                        pst.executeUpdate();
+                    }
+                }
+
                 // Prepare SQL statement for updating/inserting homes
-                String sql = "INSERT INTO enx_homes (name, owner, position) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE position = VALUES(position)";
-                try (var pst = con.prepareStatement(sql)) {
+                String insertSql = "INSERT INTO enx_homes (name, owner, position) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE position = VALUES(position)";
+                try (var pst = con.prepareStatement(insertSql)) {
                     for (Home home : userData.homes()) {
                         pst.setString(1, home.name());
                         pst.setString(2, home.owner().toString());

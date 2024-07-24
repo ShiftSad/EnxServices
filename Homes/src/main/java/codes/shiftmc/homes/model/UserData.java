@@ -11,4 +11,13 @@ public record UserData(
         homes.add(home);
         return this;
     }
+
+    public UserData removeHome(Home home) {
+        homes.remove(home);
+        return this;
+    }
+
+    public Home getHome(String name) {
+        return homes.stream().filter(h -> h.name().equalsIgnoreCase(name)).findFirst().orElse(null);
+    }
 }

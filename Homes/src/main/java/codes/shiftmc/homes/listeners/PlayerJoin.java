@@ -32,6 +32,7 @@ public class PlayerJoin implements Listener {
         }
 
         var user = new User(uuid, name);
+        // TODO -> Single query
         // Ensure the user exists
         database.createIfNotExists(user).thenRun(() -> {
             // Load user data

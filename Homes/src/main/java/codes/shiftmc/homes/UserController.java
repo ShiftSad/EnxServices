@@ -24,7 +24,7 @@ final public class UserController {
     }
 
     public static void createUser(@NotNull UserData user) {
-        logger.info("Creating user: {}", user.user().username());
+        logger.debug("Creating user: {}", user.user().username());
         users.put(user.user().uuid(), user);
     }
 }

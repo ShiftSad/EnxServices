@@ -20,15 +20,17 @@ import static codes.shiftmc.homes.Language.mm;
 
 public class HomeCommand {
 
+    static final Argument<String> HOME_ARGUMENT = new StringArgument("home").replaceSuggestions(ArgumentSuggestions.strings(info -> {
+        if (info.sender() instanceof Player player) {
+            var user = UserController.getUser(player.getUniqueId());
+            return user.map(userData -> userData.homes().stream().map(Home::name).toArray(String[]::new)).orElseGet(() -> new String[0]);
+        }
+        return new String[0];
+    }));
+
     public CommandAPICommand get() {
         List<Argument<?>> arguments = new ArrayList<>();
-        arguments.add(new StringArgument("home").replaceSuggestions(ArgumentSuggestions.strings(info -> {
-            if (info.sender() instanceof Player player) {
-                var user = UserController.getUser(player.getUniqueId());
-                return user.map(userData -> userData.homes().stream().map(Home::name).toArray(String[]::new)).orElseGet(() -> new String[0]);
-            }
-            return new String[0];
-        })));
+        arguments.add(HOME_ARGUMENT);
 
         return new CommandAPICommand("home")
                 .withPermission("homes.command.home")
@@ -66,9 +68,10 @@ public class HomeCommand {
                     }
 
                     sender.sendMessage(mm(String.format("<color:#5bde82>Homes de %s</color>\n", sender.getName())));
+                    // TODO -> improve this message
                     homes.forEach(home -> sender.sendMessage(mm(String.format(
-                            "<color:#5bde82>⇒ <click:run_command:'/home %s'><color:#0affe7>%s</color></click></color>",
-                            home.name(), home.name()
+                            "<color:#5bde82>⇒ <hover:show_text:'<color:#5bde82>Teleportar para <b>%s</b></color>'><click:run_command:'/home %s'><color:#0affe7>%s</color></click></color>",
+                            home.name(), home.name(), home.name()
                     ))));
                 });
     }
