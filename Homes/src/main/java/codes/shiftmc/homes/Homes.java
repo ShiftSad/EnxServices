@@ -88,6 +88,7 @@ public final class Homes extends JavaPlugin {
         new SethomeCommand(database).get().register(this);
         new DelhomeCommand(database).get().register(this);
         debugCommands();
+
     }
 
     public void debugCommands() {
