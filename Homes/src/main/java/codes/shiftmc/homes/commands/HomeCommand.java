@@ -5,16 +5,13 @@ import codes.shiftmc.homes.UserController;
 import codes.shiftmc.homes.config.MainConfiguration;
 import codes.shiftmc.homes.model.Home;
 import codes.shiftmc.homes.particle.ParticleEffect;
-import codes.shiftmc.homes.particle.image.ImageEffect;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.Argument;
 import dev.jorel.commandapi.arguments.ArgumentSuggestions;
 import dev.jorel.commandapi.arguments.StringArgument;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,12 +19,6 @@ import static codes.shiftmc.homes.Language.m;
 import static codes.shiftmc.homes.Language.mm;
 
 public class HomeCommand {
-
-    private final JavaPlugin plugin;
-
-    public HomeCommand(JavaPlugin plugin) {
-        this.plugin = plugin;
-    }
 
     public CommandAPICommand get() {
         List<Argument<?>> arguments = new ArrayList<>();
@@ -84,12 +75,11 @@ public class HomeCommand {
 
     private void teleportTask(Player player, Home home) {
         var teleportStart = MainConfiguration.getInstance().visual.particle().teleportStartEffects();
-        var teleportComplete = MainConfiguration.getInstance().visual.particle().teleportCompleteEffects();
 
         teleportStart.forEach(effect -> playParticle(player.getLocation(), effect, false));
         TeleportTask.createTeleportTask(player).thenAccept(success -> {
+            teleportStart.forEach(effect -> playParticle(home.position().toLocation(), effect, true));
             if (success) {
-                teleportComplete.forEach(effect -> playParticle(home.position().toLocation(), effect, true));
                 player.teleportAsync(home.position().toLocation()).thenRun(() -> player.sendMessage(m("teleport-success")));
                 return;
             }

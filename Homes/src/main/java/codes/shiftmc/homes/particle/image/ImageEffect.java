@@ -59,7 +59,7 @@ public class ImageEffect extends ParticleEffect {
 
     @Override
     public void spawn(Location location) {
-        iterate(location, particles);
+        animationStart(location);
     }
 
     @Override
@@ -69,7 +69,7 @@ public class ImageEffect extends ParticleEffect {
 
     @Override
     public boolean isAnimated() {
-        return false;
+        return true;
     }
 
     private int taskId = -1;

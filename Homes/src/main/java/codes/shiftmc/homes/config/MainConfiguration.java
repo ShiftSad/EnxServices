@@ -55,13 +55,8 @@ public final class MainConfiguration {
     ) { }
 
     public record Particle(
-            List<String> teleportComplete,
             List<String> teleportStart
     ) {
-        public List<ParticleEffect> teleportCompleteEffects() {
-            return convertString(teleportComplete);
-        }
-
         public List<ParticleEffect> teleportStartEffects() {
             return convertString(teleportStart);
         }
@@ -96,13 +91,12 @@ public final class MainConfiguration {
                     default -> throw new IllegalArgumentException("Invalid particle type");
                 }
             });
-
             return effects;
         }
     }
 
-    public static MainConfiguration fromYaml(Configuration configuration) {
-        return new MainConfiguration(
+    public static void fromYaml(Configuration configuration) {
+        new MainConfiguration(
                 new Database(
                         configuration.getString("database.type")
                 ),
@@ -114,7 +108,6 @@ public final class MainConfiguration {
                 ),
                 new Visual(
                         new Particle(
-                                configuration.getStringList("visual.particle.teleport-complete"),
                                 configuration.getStringList("visual.particle.teleport-start")
                         )
                 )
