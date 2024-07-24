@@ -34,3 +34,8 @@ visual:
     teleport-start:
       - "IMAGE:rick.png:32:32:0.6:10"
       - "CIRCLE:FIREWORK:5:true"
+
+  sound:
+    teleport-start: entity.enderman.teleport
+    teleport-end: block.end_portal_frame.fill
+    teleport-cancel: block.fire.extinguish

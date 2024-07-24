@@ -77,15 +77,19 @@ public class HomeCommand {
     }
 
     private void teleportTask(Player player, Home home) {
+        var sound = MainConfiguration.getInstance().visual.sound();
         var teleportStart = MainConfiguration.getInstance().visual.particle().teleportStartEffects();
 
         teleportStart.forEach(effect -> playParticle(player.getLocation(), effect, false));
+        player.playSound(player, sound.teleportStart(), 1, 1);
         TeleportTask.createTeleportTask(player).thenAccept(success -> {
             teleportStart.forEach(effect -> playParticle(home.position().toLocation(), effect, true));
             if (success) {
+                player.playSound(player, sound.teleportEnd(), 1, 1);
                 player.teleportAsync(home.position().toLocation()).thenRun(() -> player.sendMessage(m("teleport-success")));
                 return;
             }
+            player.playSound(player, sound.teleportCancel(), 1, 1);
             player.sendMessage(m("teleport-cancelled"));
         });
     }

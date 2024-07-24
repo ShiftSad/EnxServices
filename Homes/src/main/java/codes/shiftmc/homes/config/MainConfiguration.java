@@ -51,8 +51,20 @@ public final class MainConfiguration {
     ) { }
 
     public record Visual(
-            Particle particle
+            Particle particle,
+            Sound sound
     ) { }
+
+    public record Sound(
+            String teleportStart,
+            String teleportEnd,
+            String teleportCancel
+    ) {
+
+        public org.bukkit.Sound getSound(String particle) {
+            return org.bukkit.Sound.valueOf(particle);
+        }
+    }
 
     public record Particle(
             List<String> teleportStart
@@ -109,6 +121,11 @@ public final class MainConfiguration {
                 new Visual(
                         new Particle(
                                 configuration.getStringList("visual.particle.teleport-start")
+                        ),
+                        new Sound(
+                                configuration.getString("visual.sound.teleport-start"),
+                                configuration.getString("visual.sound.teleport-end"),
+                                configuration.getString("visual.sound.teleport-cancel")
                         )
                 )
         );
