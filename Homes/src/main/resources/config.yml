@@ -25,17 +25,12 @@ visual:
     #   - Particula -> Particle
     #   - Raio -> Int
     #   - Animate -> Boolean (Aparecer uma particula por vez)
-    # - Whoosh
-    #   - Particula -> Particle
-    #   - Quantas -> Int
     # - Image
     #   - Path -> String
     #   - Largura -> Int
     #   - Altura -> Int
     #   - TamanhoParticula -> Float
     #   - DividrTamanho -> Float
-    teleport-complete:
-      - "WHOOSH:FLAME:20"
-    # - "CIRCLE:FIREWORK:5:true"
     teleport-start:
       - "IMAGE:rick.png:32:32:0.6:10"
+      - "CIRCLE:FIREWORK:5:true"
