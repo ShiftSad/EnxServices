@@ -2,3 +2,9 @@ name: WindCharge
 version: '1.0.0'
 main: codes.shiftmc.windCharge.WindChange
 api-version: '1.21'
+dependencies:
+  server:
+    CommandAPI:
+      load: BEFORE
+      required: true
+      join-classpath: true
