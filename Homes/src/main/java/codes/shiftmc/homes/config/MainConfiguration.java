@@ -44,6 +44,7 @@ public final class MainConfiguration {
     ) { }
 
     public record Config(
+            Integer teleportCountdown,
             Integer teleportCooldown,
             Boolean teleportCancelOnMove,
             Boolean teleportCancelOnDamage,
@@ -113,6 +114,7 @@ public final class MainConfiguration {
                         configuration.getString("database.type")
                 ),
                 new Config(
+                        configuration.getInt("config.teleport-countdown"),
                         configuration.getInt("config.teleport-cooldown"),
                         configuration.getBoolean("config.teleport-cancel-on-move"),
                         configuration.getBoolean("config.teleport-cancel-on-damage"),

@@ -12,13 +12,14 @@ import dev.jorel.commandapi.arguments.StringArgument;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static codes.shiftmc.homes.Language.m;
 import static codes.shiftmc.homes.Language.mm;
 
 public class HomeCommand {
+
+    private final WeakHashMap<UUID, Long> cooldowns = new WeakHashMap<>();
 
     static final Argument<String> HOME_ARGUMENT = new StringArgument("home").replaceSuggestions(ArgumentSuggestions.strings(info -> {
         if (info.sender() instanceof Player player) {
@@ -77,6 +78,19 @@ public class HomeCommand {
     }
 
     private void teleportTask(Player player, Home home) {
+        // Check cooldown
+        var cooldown = MainConfiguration.getInstance().config.teleportCooldown();
+        var lastTeleport = cooldowns.get(player.getUniqueId());
+        if (lastTeleport != null && System.currentTimeMillis() < lastTeleport + cooldown * 1000) {
+            player.sendMessage(mm(
+                    "<dark_red><b>ERRO: </b></dark_red><red>Você precisa esperar %s segundos para se teleportar novamente.",
+                    Math.floor((lastTeleport + cooldown * 1000 - System.currentTimeMillis()) / 1000D)
+            ));
+            return;
+        }
+
+        cooldowns.put(player.getUniqueId(), System.currentTimeMillis());
+
         var sound = MainConfiguration.getInstance().visual.sound();
         var teleportStart = MainConfiguration.getInstance().visual.particle().teleportStartEffects();
 

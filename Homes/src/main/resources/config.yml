@@ -9,7 +9,10 @@ database:
 
 config:
   # O famoso contador antes do teleporte
+  teleport-countdown: 5
+  # Tempo para poder teleportar novamente
   teleport-cooldown: 5
+
   teleport-cancel-on-move: true
   teleport-cancel-on-damage: true
 

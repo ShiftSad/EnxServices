@@ -55,8 +55,12 @@ final public class TeleportTask implements Listener {
     public static CompletableFuture<Boolean> createTeleportTask(
             Player player
     ) {
+        // Check if there is a task already, cancel it
+        PlayerTeleport teleport = tasks.remove(player.getUniqueId());
+        if (teleport != null) { teleport.future.complete(false); }
+
         CompletableFuture<Boolean> future = new CompletableFuture<>();
-        long delay = configuration.config.teleportCooldown() * 1000;
+        long delay = configuration.config.teleportCountdown() * 1000;
         long scheduledTime = System.currentTimeMillis() + delay;
 
         tasks.put(player.getUniqueId(), new PlayerTeleport(
