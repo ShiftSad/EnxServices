@@ -1,6 +1,7 @@
 name: Homes
 version: '1.0.0'
 main: codes.shiftmc.homes.Homes
+loader: codes.shiftmc.homes.HomesLoader
 api-version: '1.21'
 dependencies:
   server:
