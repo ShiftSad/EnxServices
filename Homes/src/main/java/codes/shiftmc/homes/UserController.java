@@ -5,10 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 final public class UserController {
 
@@ -26,5 +23,14 @@ final public class UserController {
     public static void createUser(@NotNull UserData user) {
         logger.debug("Creating user: {}", user.user().username());
         users.put(user.user().uuid(), user);
+    }
+
+    public static void removeUser(@NotNull UUID uuid) {
+        logger.debug("Removing user: {}", uuid);
+        users.remove(uuid);
+    }
+
+    public static List<UserData> getUsers() {
+        return new ArrayList<>(users.values());
     }
 }

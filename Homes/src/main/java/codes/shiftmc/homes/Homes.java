@@ -1,8 +1,6 @@
 package codes.shiftmc.homes;
 
-import codes.shiftmc.homes.commands.DelhomeCommand;
-import codes.shiftmc.homes.commands.HomeCommand;
-import codes.shiftmc.homes.commands.SethomeCommand;
+import codes.shiftmc.homes.commands.*;
 import codes.shiftmc.homes.config.DatabaseConfig;
 import codes.shiftmc.homes.config.MainConfiguration;
 import codes.shiftmc.homes.database.Database;
@@ -17,6 +15,7 @@ import dev.jorel.commandapi.arguments.*;
 import dev.jorel.commandapi.wrappers.ParticleData;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+import xyz.xenondevs.invui.InvUI;
 
 import java.io.File;
 import java.io.IOException;
@@ -81,75 +80,15 @@ public final class Homes extends JavaPlugin {
 
         database = new MysqlDatabase(databaseConfig);
 
+        InvUI.getInstance().setPlugin(this);
+
         // Register listeners and commands
         getServer().getPluginManager().registerEvents(new PlayerJoin(database), this);
         getServer().getPluginManager().registerEvents(TeleportTask.instance, this);
         new HomeCommand().get().register(this);
         new SethomeCommand(database).get().register(this);
         new DelhomeCommand(database).get().register(this);
-        debugCommands();
-
-    }
-
-    public void debugCommands() {
-        var circle = new CommandAPICommand("circle")
-                .withArguments(
-                        new IntegerArgument("radius"),
-                        new ParticleArgument("particle"),
-                        new BooleanArgument("animation")
-                )
-                .executesPlayer((sender, args) -> {
-                    Integer radius = (Integer) args.get("radius");
-                    ParticleData particle = (ParticleData) args.get("particle");
-                    Boolean animation = (Boolean) args.get("animation");
-
-                    if (radius == null || particle == null || animation == null) {
-                        sender.sendMessage("Something went wrong");
-                        return;
-                    }
-
-                    var circleEffect = new CircleEffect(this, radius, particle.particle(), animation);
-                    if (animation) {
-                        circleEffect.animationStart(
-                                sender.getLocation()
-                        );
-                        Bukkit.getScheduler().runTaskLater(this, circleEffect::animationEnd, 20 * 5);
-                        return;
-                    }
-                    circleEffect.spawn(sender.getLocation());
-                });
-
-        var image = new CommandAPICommand("image")
-                .withArguments(
-                        new StringArgument("path"),
-                        new IntegerArgument("width"),
-                        new IntegerArgument("height"),
-                        new FloatArgument("size"),
-                        new FloatArgument("divide")
-                )
-                .executesPlayer((sender, args) -> {
-                    String path = (String) args.get("path");
-                    Integer width = (Integer) args.get("width");
-                    Integer height = (Integer) args.get("height");
-                    Float size = (Float) args.get("size");
-                    Float divide = (Float) args.get("divide");
-
-                    if (path == null || width == null || height == null || size == null || divide == null) {
-                        sender.sendMessage("Something went wrong");
-                        return;
-                    }
-
-                    var file = new File(path);
-                    if (!file.exists()) {
-                        sender.sendMessage("File does not exist");
-                        return;
-                    }
-
-                    new ImageEffect(this, file, width, height, size, divide).animationStart(sender.getLocation());
-                });
-
-        new CommandAPICommand("debugparticle")
-                .withSubcommands(circle, image)
-                .register(this);
+        new AdminHomeCommand().get().register(this);
+        new DebugCommand(this, database).get().register(this);
     }
 }

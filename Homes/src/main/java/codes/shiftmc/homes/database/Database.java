@@ -4,6 +4,7 @@ import codes.shiftmc.homes.model.User;
 import codes.shiftmc.homes.model.UserData;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -16,4 +17,7 @@ public abstract class Database {
     public abstract CompletableFuture<Void> createIfNotExists(@NotNull User user);
 
     public abstract CompletableFuture<Void> updateUser(@NotNull UserData user);
+
+    public abstract CompletableFuture<Void> bulkDelete(@NotNull UUID... uuids);
+    public abstract CompletableFuture<Void> bulkCreate(ArrayList<UserData> users);
 }

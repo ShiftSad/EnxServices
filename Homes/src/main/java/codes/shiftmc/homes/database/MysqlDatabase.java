@@ -13,10 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -194,6 +191,96 @@ public class MysqlDatabase extends Database {
                         con.close();
                     } catch (SQLException e) {
                         logger.error("Failed to reset auto-commit or close connection for user: {}", userData.user().username(), e);
+                    }
+                }
+            }
+        }, executorService);
+    }
+
+    @Override
+    public CompletableFuture<Void> bulkDelete(UUID... uuids) {
+        logger.debug("Deleting users: {}", Arrays.stream(uuids).map(UUID::toString).toArray());
+        return CompletableFuture.runAsync(() -> {
+            try (var con = ds.getConnection()) {
+                con.setAutoCommit(false); // Start transaction
+
+                // Delete homes
+                try (var pst = con.prepareStatement("DELETE FROM enx_homes WHERE owner = ?")) {
+                    for (UUID uuid : uuids) {
+                        pst.setString(1, uuid.toString());
+                        pst.executeUpdate();
+                    }
+                }
+
+                // Delete users
+                try (var pst = con.prepareStatement("DELETE FROM enx_users WHERE uuid = ?")) {
+                    for (UUID uuid : uuids) {
+                        pst.setString(1, uuid.toString());
+                        pst.executeUpdate();
+                    }
+                }
+
+                con.commit(); // Commit transaction
+            } catch (SQLException e) {
+                throw new RuntimeException("Failed to bulk delete users", e);
+            }
+        }, executorService);
+    }
+
+    @Override
+    public CompletableFuture<Void> bulkCreate(ArrayList<UserData> users) {
+        logger.debug("Bulk creating users and their homes");
+        return CompletableFuture.runAsync(() -> {
+            Connection con = null;
+            try {
+                con = ds.getConnection();
+                con.setAutoCommit(false); // Start transaction
+
+                // Prepare SQL statements
+                String userSql = "INSERT INTO enx_users (uuid, username) VALUES (?, ?) ON DUPLICATE KEY UPDATE username = VALUES(username)";
+                String homeSql = "INSERT INTO enx_homes (name, owner, position) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE position = VALUES(position)";
+
+                try (var userPst = con.prepareStatement(userSql);
+                     var homePst = con.prepareStatement(homeSql)) {
+
+                    for (UserData userData : users) {
+                        // Insert user
+                        userPst.setString(1, userData.user().uuid().toString());
+                        userPst.setString(2, userData.user().username());
+                        userPst.addBatch();
+
+                        // Insert homes
+                        for (Home home : userData.homes()) {
+                            homePst.setString(1, home.name());
+                            homePst.setString(2, home.owner().toString());
+                            homePst.setString(3, home.position().toString());
+                            homePst.addBatch();
+                        }
+                    }
+
+                    // Execute batch inserts
+                    userPst.executeBatch();
+                    homePst.executeBatch();
+                }
+
+                con.commit(); // Commit transaction
+            } catch (SQLException e) {
+                if (con != null) {
+                    try {
+                        logger.error("Failed to bulk create users and homes", e);
+                        con.rollback(); // Rollback transaction in case of error
+                    } catch (SQLException ex) {
+                        throw new RuntimeException("Failed to rollback transaction", ex);
+                    }
+                }
+                throw new RuntimeException("Failed to bulk create users and homes", e);
+            } finally {
+                if (con != null) {
+                    try {
+                        con.setAutoCommit(true); // Reset auto-commit
+                        con.close();
+                    } catch (SQLException e) {
+                        logger.error("Failed to reset auto-commit or close connection", e);
                     }
                 }
             }
