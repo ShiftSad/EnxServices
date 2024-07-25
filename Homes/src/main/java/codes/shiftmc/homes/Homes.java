@@ -78,6 +78,16 @@ public final class Homes extends JavaPlugin {
 
         database = new MysqlDatabase(databaseConfig);
 
+        // Save sample rick image
+        var rickImage = new File(data, "rick.png");
+        if (!rickImage.exists()) {
+            try {
+                Files.write(rickImage.toPath(), getResource("rick.png").readAllBytes());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         InvUI.getInstance().setPlugin(this);
 
         // Register listeners and commands
