@@ -20,7 +20,8 @@ final public class Language {
     private static final MiniMessage miniMessage = MiniMessage.builder().build();
     private static final Map<String, Component> messages = new HashMap<>();
 
-    private Language() {}
+    private Language() {
+    }
 
     // TODO -> Add support for placeholders (Urgent)
     public static void loadMessages(Path path) throws IOException {
@@ -42,7 +43,7 @@ final public class Language {
     public static Component getMessage(String key) {
         return messages.get(key);
     }
-    
+
     public static Component m(String key) {
         return getMessage(key);
     }

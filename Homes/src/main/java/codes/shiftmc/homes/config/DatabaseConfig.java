@@ -12,4 +12,5 @@ public record DatabaseConfig(
         int keepaliveTime,
         int connectionTimeout,
         int leakDetectionThreshold
-) { }
+) {
+}

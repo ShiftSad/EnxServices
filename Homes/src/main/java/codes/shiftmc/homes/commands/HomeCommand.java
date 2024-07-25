@@ -12,14 +12,15 @@ import dev.jorel.commandapi.arguments.StringArgument;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.WeakHashMap;
 
 import static codes.shiftmc.homes.Language.m;
 import static codes.shiftmc.homes.Language.mm;
 
 public class HomeCommand {
-
-    private final WeakHashMap<UUID, Long> cooldowns = new WeakHashMap<>();
 
     static final Argument<String> HOME_ARGUMENT = new StringArgument("home").replaceSuggestions(ArgumentSuggestions.strings(info -> {
         if (info.sender() instanceof Player player) {
@@ -28,6 +29,7 @@ public class HomeCommand {
         }
         return new String[0];
     }));
+    private final WeakHashMap<UUID, Long> cooldowns = new WeakHashMap<>();
 
     public CommandAPICommand get() {
         List<Argument<?>> arguments = new ArrayList<>();
@@ -116,7 +118,6 @@ public class HomeCommand {
 
         if (effect.isAnimated()) {
             effect.animationStart(location);
-        }
-        else effect.spawn(location);
+        } else effect.spawn(location);
     }
 }

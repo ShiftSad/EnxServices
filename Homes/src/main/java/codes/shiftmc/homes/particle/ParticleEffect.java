@@ -11,5 +11,6 @@ abstract public class ParticleEffect {
     abstract public boolean isAnimated();
 
     abstract public void animationStart(Location location);
+
     abstract public void animationEnd();
 }

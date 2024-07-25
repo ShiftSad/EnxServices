@@ -6,14 +6,8 @@ import codes.shiftmc.homes.config.MainConfiguration;
 import codes.shiftmc.homes.database.Database;
 import codes.shiftmc.homes.database.MysqlDatabase;
 import codes.shiftmc.homes.listeners.PlayerJoin;
-import codes.shiftmc.homes.particle.CircleEffect;
-import codes.shiftmc.homes.particle.image.ImageEffect;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import dev.jorel.commandapi.CommandAPICommand;
-import dev.jorel.commandapi.arguments.*;
-import dev.jorel.commandapi.wrappers.ParticleData;
-import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.xenondevs.invui.InvUI;
 
@@ -68,7 +62,9 @@ public final class Homes extends JavaPlugin {
                                 2000
                         ))
                 );
-            } catch (IOException e) {throw new RuntimeException(e); }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         try {
@@ -76,7 +72,9 @@ public final class Homes extends JavaPlugin {
                     Files.readString(mysqlConfigFile.toPath()),
                     DatabaseConfig.class
             );
-        } catch (IOException e) { throw new RuntimeException(e); }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         database = new MysqlDatabase(databaseConfig);
 

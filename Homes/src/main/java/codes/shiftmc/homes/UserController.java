@@ -10,11 +10,11 @@ import java.util.*;
 final public class UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+    private static final Map<UUID, UserData> users = new HashMap<>();
 
     // Static class
-    private UserController() {}
-
-    private static final Map<UUID, UserData> users = new HashMap<>();
+    private UserController() {
+    }
 
     public static Optional<UserData> getUser(@NotNull UUID uuid) {
         return Optional.ofNullable(users.get(uuid));

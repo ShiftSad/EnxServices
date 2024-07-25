@@ -39,9 +39,35 @@ public final class MainConfiguration {
         return configuration;
     }
 
+    public static void fromYaml(Configuration configuration) {
+        new MainConfiguration(
+                new Database(
+                        configuration.getString("database.type")
+                ),
+                new Config(
+                        configuration.getInt("config.teleport-countdown"),
+                        configuration.getInt("config.teleport-cooldown"),
+                        configuration.getBoolean("config.teleport-cancel-on-move"),
+                        configuration.getBoolean("config.teleport-cancel-on-damage"),
+                        configuration.getInt("config.homes-limit")
+                ),
+                new Visual(
+                        new Particle(
+                                configuration.getStringList("visual.particle.teleport-start")
+                        ),
+                        new Sound(
+                                configuration.getString("visual.sound.teleport-start"),
+                                configuration.getString("visual.sound.teleport-end"),
+                                configuration.getString("visual.sound.teleport-cancel")
+                        )
+                )
+        );
+    }
+
     public record Database(
             String type
-    ) { }
+    ) {
+    }
 
     public record Config(
             Integer teleportCountdown,
@@ -49,12 +75,14 @@ public final class MainConfiguration {
             Boolean teleportCancelOnMove,
             Boolean teleportCancelOnDamage,
             Integer homesLimit
-    ) { }
+    ) {
+    }
 
     public record Visual(
             Particle particle,
             Sound sound
-    ) { }
+    ) {
+    }
 
     public record Sound(
             String teleportStart,
@@ -106,30 +134,5 @@ public final class MainConfiguration {
             });
             return effects;
         }
-    }
-
-    public static void fromYaml(Configuration configuration) {
-        new MainConfiguration(
-                new Database(
-                        configuration.getString("database.type")
-                ),
-                new Config(
-                        configuration.getInt("config.teleport-countdown"),
-                        configuration.getInt("config.teleport-cooldown"),
-                        configuration.getBoolean("config.teleport-cancel-on-move"),
-                        configuration.getBoolean("config.teleport-cancel-on-damage"),
-                        configuration.getInt("config.homes-limit")
-                ),
-                new Visual(
-                        new Particle(
-                                configuration.getStringList("visual.particle.teleport-start")
-                        ),
-                        new Sound(
-                                configuration.getString("visual.sound.teleport-start"),
-                                configuration.getString("visual.sound.teleport-end"),
-                                configuration.getString("visual.sound.teleport-cancel")
-                        )
-                )
-        );
     }
 }

@@ -7,17 +7,15 @@ import java.util.Random;
  * Just did it for fun. :|
  *
  * @author amit
- *
  */
 public class NameGenerator {
     private static final int diffBetweenAtoZ = 25;
     private static final int charValueOfa = 97;
-    private String lastGeneratedName = "";
     int length;
-
     char[] vowels = {
             'a', 'e', 'i', 'o', 'u'
     };
+    private String lastGeneratedName = "";
 
     public NameGenerator(int lengthOfName) {
         if (lengthOfName < 5 || lengthOfName > 10) {
@@ -29,7 +27,7 @@ public class NameGenerator {
     }
 
     public String getName() {
-        for (;;) {
+        for (; ; ) {
             Random randomNumberGenerator = new Random(Calendar.getInstance()
                     .getTimeInMillis());
 
@@ -42,7 +40,7 @@ public class NameGenerator {
                     nameInCharArray[i] = getConsonant(randomNumberGenerator);
                 }
             }
-            nameInCharArray[0] = (char) Character
+            nameInCharArray[0] = Character
                     .toUpperCase(nameInCharArray[0]);
 
             String currentGeneratedName = new String(nameInCharArray);
@@ -61,7 +59,7 @@ public class NameGenerator {
     }
 
     private char getConsonant(Random randomNumberGenerator) {
-        for (;;) {
+        for (; ; ) {
             char currentCharacter = (char) (randomNumberGenerator
                     .nextInt(diffBetweenAtoZ) + charValueOfa);
             if (currentCharacter == 'a' || currentCharacter == 'e'

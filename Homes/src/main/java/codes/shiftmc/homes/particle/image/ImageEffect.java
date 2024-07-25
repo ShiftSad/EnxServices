@@ -24,6 +24,7 @@ public class ImageEffect extends ParticleEffect {
 
     private final double centerX;
     private final double centerZ;
+    private int taskId = -1;
 
     public ImageEffect(JavaPlugin plugin, File file, int width, int height, float size, float divide) {
         this.plugin = plugin;
@@ -43,7 +44,9 @@ public class ImageEffect extends ParticleEffect {
                     int blue = (pixel) & 0xff;
 
                     // Ignore black or pixels near black
-                    if (red < 15 && green < 15 && blue < 15) { continue; }
+                    if (red < 15 && green < 15 && blue < 15) {
+                        continue;
+                    }
 
                     var dustOptions = new Particle.DustOptions(Color.fromARGB(alpha, red, green, blue), size);
                     var offset = new Offset(x, 0, y);
@@ -51,7 +54,9 @@ public class ImageEffect extends ParticleEffect {
                     particles.add(new ParticleData(dustOptions, offset));
                 }
             }
-        } catch (IOException e) { throw new RuntimeException(e); }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         centerX = particles.stream().mapToDouble(p -> p.offset().x()).average().orElse(0);
         centerZ = particles.stream().mapToDouble(p -> p.offset().z()).average().orElse(0);
@@ -64,15 +69,15 @@ public class ImageEffect extends ParticleEffect {
 
     @Override
     public void spawn(Location location, int ticks) {
-        for (int i = 0; i < ticks; i++) { Bukkit.getScheduler().runTaskLater(plugin, () -> spawn(location), i); }
+        for (int i = 0; i < ticks; i++) {
+            Bukkit.getScheduler().runTaskLater(plugin, () -> spawn(location), i);
+        }
     }
 
     @Override
     public boolean isAnimated() {
         return true;
     }
-
-    private int taskId = -1;
 
     @Override
     public void animationStart(Location location) {

@@ -17,6 +17,7 @@ public class CircleEffect extends ParticleEffect {
 
     @Getter
     private final Boolean animate;
+    private int taskId = -1;
 
     public CircleEffect(JavaPlugin plugin, double radius, Particle particle, Boolean animate) {
         this.plugin = plugin;
@@ -34,15 +35,15 @@ public class CircleEffect extends ParticleEffect {
 
     @Override
     public void spawn(Location location, int ticks) {
-        for (int i = 0; i < ticks; i++) { Bukkit.getScheduler().runTaskLater(plugin, () -> spawn(location), i); }
+        for (int i = 0; i < ticks; i++) {
+            Bukkit.getScheduler().runTaskLater(plugin, () -> spawn(location), i);
+        }
     }
 
     @Override
     public boolean isAnimated() {
         return animate;
     }
-
-    private int taskId = -1;
 
     @Override
     public void animationStart(Location location) {

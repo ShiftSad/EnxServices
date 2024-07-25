@@ -50,9 +50,12 @@ public class MysqlDatabase extends Database {
             try (var pst = con.prepareStatement("CREATE TABLE IF NOT EXISTS enx_users (uuid VARCHAR(36) PRIMARY KEY, username VARCHAR(17) NOT NULL)")) {
                 pst.executeUpdate();
             }
-            try (var pst = con.prepareStatement("CREATE TABLE IF NOT EXISTS enx_homes (name VARCHAR(17) NOT NULL, owner VARCHAR(36) NOT NULL, position VARCHAR(255) NOT NULL, PRIMARY KEY (name, owner))")) {                pst.executeUpdate();
+            try (var pst = con.prepareStatement("CREATE TABLE IF NOT EXISTS enx_homes (name VARCHAR(17) NOT NULL, owner VARCHAR(36) NOT NULL, position VARCHAR(255) NOT NULL, PRIMARY KEY (name, owner))")) {
+                pst.executeUpdate();
             }
-        } catch (SQLException e) { throw new RuntimeException("Failed to create tables", e); }
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to create tables", e);
+        }
     }
 
     @Override

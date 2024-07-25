@@ -18,6 +18,7 @@ import static codes.shiftmc.homes.config.MainConfiguration.getInstance;
 public class SethomeCommand {
 
     private final Database database;
+    private final HashMap<UUID, Integer> homeLimitCache = new HashMap<>();
 
     public SethomeCommand(Database database) {
         this.database = database;
@@ -79,8 +80,6 @@ public class SethomeCommand {
         )));
     }
 
-    private final HashMap<UUID, Integer> homeLimitCache = new HashMap<>();
-
     private boolean canSetHome(Player player) {
         if (player.hasPermission("homes.limit.bypass")) {
             return true;
@@ -91,4 +90,5 @@ public class SethomeCommand {
                 .mapToInt(perm -> Integer.parseInt(perm.getPermission().split("\\.")[2]))
                 .max()
                 .orElse(getInstance().config.homesLimit())) > UserController.getUser(player.getUniqueId()).map(user -> user.homes().size()).orElse(0);
-    }}
+    }
+}

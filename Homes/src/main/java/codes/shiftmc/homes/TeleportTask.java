@@ -18,6 +18,7 @@ import static codes.shiftmc.homes.Language.mm;
 
 final public class TeleportTask implements Listener {
 
+    public static final TeleportTask instance = new TeleportTask();
     private static final HashMap<UUID, PlayerTeleport> tasks = new HashMap<>();
     private static final MainConfiguration configuration = MainConfiguration.getInstance();
 
@@ -44,20 +45,14 @@ final public class TeleportTask implements Listener {
         }, 0, 1L);
     }
 
-    private record PlayerTeleport(
-            Player player,
-            long time,
-            CompletableFuture<Boolean> future
-    ) {}
-
-    public static final TeleportTask instance = new TeleportTask();
-
     public static CompletableFuture<Boolean> createTeleportTask(
             Player player
     ) {
         // Check if there is a task already, cancel it
         PlayerTeleport teleport = tasks.remove(player.getUniqueId());
-        if (teleport != null) { teleport.future.complete(false); }
+        if (teleport != null) {
+            teleport.future.complete(false);
+        }
 
         CompletableFuture<Boolean> future = new CompletableFuture<>();
         long delay = configuration.config.teleportCountdown() * 1000;
@@ -96,5 +91,12 @@ final public class TeleportTask implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         tasks.remove(event.getPlayer().getUniqueId());
+    }
+
+    private record PlayerTeleport(
+            Player player,
+            long time,
+            CompletableFuture<Boolean> future
+    ) {
     }
 }
