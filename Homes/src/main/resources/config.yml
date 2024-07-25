@@ -32,7 +32,7 @@ visual:
     #   - Largura -> Int
     #   - Altura -> Int
     #   - TamanhoParticula -> Float
-    #   - DividrTamanho -> Float
+    #   - DividirTamanho -> Float
     teleport-start:
       - "IMAGE:plugins/Homes/rick.png:32:32:0.6:10"
       - "CIRCLE:FIREWORK:5:true"
