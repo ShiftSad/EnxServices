@@ -21,6 +21,9 @@ dependencies {
 
     implementation 'org.projectlombok:lombok:1.18.34'
     implementation 'com.zaxxer:HikariCP:5.1.0'
+
+    // Add sub module
+    implementation project(':Common')
 }
 
 def targetJavaVersion = 21

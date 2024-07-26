@@ -1,4 +1,4 @@
-package codes.shiftmc.homes.particle;
+package codes.shiftmc.commum.particle;
 
 import lombok.Getter;
 import org.bukkit.Bukkit;

@@ -4,7 +4,7 @@ import codes.shiftmc.homes.TeleportTask;
 import codes.shiftmc.homes.UserController;
 import codes.shiftmc.homes.config.MainConfiguration;
 import codes.shiftmc.homes.model.Home;
-import codes.shiftmc.homes.particle.ParticleEffect;
+import codes.shiftmc.commum.particle.ParticleEffect;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.Argument;
 import dev.jorel.commandapi.arguments.ArgumentSuggestions;

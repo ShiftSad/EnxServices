@@ -1,4 +1,4 @@
-package codes.shiftmc.homes.particle.image;
+package codes.shiftmc.commum.particle.image;
 
 import org.bukkit.Particle;
 

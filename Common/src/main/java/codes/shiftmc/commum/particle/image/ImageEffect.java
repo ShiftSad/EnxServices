@@ -1,6 +1,6 @@
-package codes.shiftmc.homes.particle.image;
+package codes.shiftmc.commum.particle.image;
 
-import codes.shiftmc.homes.particle.ParticleEffect;
+import codes.shiftmc.commum.particle.ParticleEffect;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;

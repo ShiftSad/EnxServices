@@ -9,16 +9,9 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/WindCharge" />
-            <option value="$PROJECT_DIR$/commum" />
-          </set>
-        </option>
-      </GradleProjectSettings>
-      <GradleProjectSettings>
-        <option name="externalProjectPath" value="$PROJECT_DIR$/Homes" />
-        <option name="modules">
-          <set>
+            <option value="$PROJECT_DIR$/Common" />
             <option value="$PROJECT_DIR$/Homes" />
+            <option value="$PROJECT_DIR$/WindCharge" />
           </set>
         </option>
       </GradleProjectSettings>
