@@ -1,3 +1,10 @@
 config:
   multiplicador-knockback: 2.0
   multiplicador-velocidade: 2.0
+
+visual:
+  particle:
+    # Para mais informacoes, refira-se a configuracao do plugin Homes!
+    # Obs: Nao tem suporte para animacoes!
+    use:
+      - "CIRCLE:FIREWORK:2:false"

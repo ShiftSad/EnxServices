@@ -13,8 +13,13 @@ public class ExplosionEvent implements Listener {
     public void onKnockback(EntityKnockbackEvent event) {
         if (event.getCause() != EntityKnockbackEvent.Cause.EXPLOSION) return;
         if (event.getEntity() instanceof WindCharge) {
+            // Play particle
+            MainConfiguration.getInstance().visual.particle().useEffects().forEach(effect ->
+                    effect.spawn(event.getEntity().getLocation())
+            );
+
             event.setKnockback(event.getKnockback().multiply(
-                    MainConfiguration.getInstance().knockbackMultiplier
+                    MainConfiguration.getInstance().config.knockbackMultiplier()
             ));
         }
     }
@@ -23,7 +28,7 @@ public class ExplosionEvent implements Listener {
     public void onLaunch(PlayerLaunchProjectileEvent event) {
         if (event.getProjectile() instanceof WindCharge windCharge) {
             windCharge.setVelocity(windCharge.getVelocity().multiply(
-                    MainConfiguration.getInstance().velocityMultiplier
+                    MainConfiguration.getInstance().config.velocityMultiplier()
             ));
         }
     }

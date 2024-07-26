@@ -16,6 +16,9 @@ repositories {
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
     compileOnly "dev.jorel:commandapi-bukkit-core:9.5.0"
+
+    // Add sub module
+    implementation project(':Common')
 }
 
 def targetJavaVersion = 21
