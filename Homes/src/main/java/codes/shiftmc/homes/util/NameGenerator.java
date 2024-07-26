@@ -1,6 +1,5 @@
 package codes.shiftmc.homes.util;
 
-import java.util.Calendar;
 import java.util.Random;
 
 /**
@@ -18,8 +17,7 @@ public class NameGenerator {
     private String lastGeneratedName = "";
 
     public NameGenerator(int lengthOfName) {
-        if (lengthOfName < 5 || lengthOfName > 10) {
-            System.out.println("Setting default length to 7");
+        if (lengthOfName < 5 || lengthOfName > 18) {
             lengthOfName = 7;
         }
 
@@ -28,8 +26,7 @@ public class NameGenerator {
 
     public String getName() {
         for (; ; ) {
-            Random randomNumberGenerator = new Random(Calendar.getInstance()
-                    .getTimeInMillis());
+            Random randomNumberGenerator = new Random();
 
             char[] nameInCharArray = new char[length];
 

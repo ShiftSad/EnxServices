@@ -57,7 +57,6 @@ public class AdminView {
                     // Remove all items that don't match the search
                     playerGui.setContent(new ArrayList<>(items.stream().filter((item) -> {
                         var name = PlainTextComponentSerializer.plainText().serialize(item.getItemProvider().get().displayName()).substring(1);
-                        System.out.println(name);
                         return name.toLowerCase().contains(word.toLowerCase());
                     }).toList()));
                 })

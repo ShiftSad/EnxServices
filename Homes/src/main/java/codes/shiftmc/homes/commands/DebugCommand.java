@@ -75,7 +75,7 @@ public class DebugCommand {
                         List<Home> homes = new ArrayList<>();
                         for (int j = 0; j < new Random().nextInt(0, 5); j++) {
                             homes.add(new Home(
-                                    new NameGenerator(16).getName(),
+                                    new NameGenerator(10).getName(),
                                     user.uuid(),
                                     Position.fromString(
                                             "world;" +

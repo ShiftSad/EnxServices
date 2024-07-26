@@ -17,7 +17,7 @@ public class BackItem extends PageItem {
         var builder = new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE);
         builder.setDisplayName("§7Anterior")
                 .addLoreLines(gui.hasPreviousPage() ?
-                        "§7Vá para a página §e" + (gui.getCurrentPage() - 1) + "§7/§e" + gui.getPageAmount() :
+                        "§7Vá para a página §e" + (gui.getCurrentPage()) + "§7/§e" + gui.getPageAmount() :
                         "§cEssa é a primeira página!"
                 );
         return builder;
