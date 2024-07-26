@@ -51,6 +51,10 @@ Caso mais conveniente, tambem e possivel baixar e rodar o plugin diretamente no 
 ### Requisitos:
 
 - [x] Força da explosão configurável
+  - Forca da explosao realmente funcionando, essa parte deu muito mais trabalho que deveria,
+  recomendo verificar nas outras submissões, pois acredito que a maioria dos candidatos
+  nao fizeram exatamente como o planejado, dando umas trapaceadas, como, por exemplo, 
+  aplicar o modificador a qualquer explosao!
 - [x] Opção para adicionar partículas
     - Suporte a mesma engine de particulas do plugin Homes
 - [x] Velocidade do projétil configurável
