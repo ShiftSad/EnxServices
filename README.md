@@ -36,7 +36,7 @@ Caso mais conveniente, tambem e possivel baixar e rodar o plugin diretamente no 
     - Nao simplesmente exibindo particulas, como uma engine simples
       e escalavel para exibir e configurar particulas. Capaz de renderizar
       qualquer imagem em tempo real (e fazer gira!), como efeitos genericos,
-      tipo um circulo animado.
+      tipo um círculo animado.
     - Como um pequeno extra, tambem e possivel configurar o som que
       sera tocado ao teletransportar.
 - [x] Todas as homes devem ser salvas em um banco de dados.

@@ -1,11 +1,8 @@
 package codes.shiftmc.windCharge.listener;
 
 import codes.shiftmc.windCharge.MainConfiguration;
-import codes.shiftmc.windCharge.WindChange;
-import com.destroystokyo.paper.event.entity.EntityKnockbackByEntityEvent;
 import com.destroystokyo.paper.event.player.PlayerLaunchProjectileEvent;
 import io.papermc.paper.event.entity.EntityKnockbackEvent;
-import io.papermc.paper.event.entity.EntityPushedByEntityAttackEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.WindCharge;
 import org.bukkit.event.EventHandler;
@@ -16,10 +13,14 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 import java.util.UUID;
 import java.util.WeakHashMap;
 
-import static org.bukkit.event.EventPriority.*;
+import static org.bukkit.event.EventPriority.HIGHEST;
+import static org.bukkit.event.EventPriority.LOWEST;
 
 public class ExplosionEvent implements Listener {
 
+    /**
+     * Depois de 1 litro de energetico Bally, achei um workaround para aumentar o knockback.
+     */
     private final MainConfiguration config = MainConfiguration.getInstance();
     private final WeakHashMap<UUID, Integer> explosionMultiplier = new WeakHashMap<>();
 
@@ -27,7 +28,6 @@ public class ExplosionEvent implements Listener {
     public void onKnockback(EntityKnockbackEvent event) {
         if (event.getCause() != EntityKnockbackEvent.Cause.EXPLOSION) return;
         var map = explosionMultiplier.get(event.getEntity().getUniqueId());
-        System.out.println(map + "|" + Bukkit.getCurrentTick());
         if (map != null && map >= Bukkit.getCurrentTick()) {
             event.getEntity().setVelocity(event.getKnockback().multiply(config.config.velocityMultiplier()));
         }
