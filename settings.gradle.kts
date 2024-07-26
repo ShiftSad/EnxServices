@@ -1,4 +1,4 @@
 rootProject.name = "EnxServices"
 
-include("commum")
+include("Homes")
 include("WindCharge")
