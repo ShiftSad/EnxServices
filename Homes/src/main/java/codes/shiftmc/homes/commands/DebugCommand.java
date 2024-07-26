@@ -1,13 +1,13 @@
 package codes.shiftmc.homes.commands;
 
+import codes.shiftmc.commum.particle.CircleEffect;
+import codes.shiftmc.commum.particle.image.ImageEffect;
 import codes.shiftmc.homes.UserController;
 import codes.shiftmc.homes.database.Database;
 import codes.shiftmc.homes.model.Home;
 import codes.shiftmc.homes.model.Position;
 import codes.shiftmc.homes.model.User;
 import codes.shiftmc.homes.model.UserData;
-import codes.shiftmc.commum.particle.CircleEffect;
-import codes.shiftmc.commum.particle.image.ImageEffect;
 import codes.shiftmc.homes.util.NameGenerator;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
@@ -79,11 +79,11 @@ public class DebugCommand {
                                     user.uuid(),
                                     Position.fromString(
                                             "world;" +
-                                            random.nextInt(-1000, 1000) + ";" +
-                                            random.nextInt(0, 320) + ";" +
-                                            random.nextInt(-1000, 1000) + ";" +
-                                            random.nextInt(0, 360) + ";" +
-                                            random.nextInt(0, 360)
+                                                    random.nextInt(-1000, 1000) + ";" +
+                                                    random.nextInt(0, 320) + ";" +
+                                                    random.nextInt(-1000, 1000) + ";" +
+                                                    random.nextInt(0, 360) + ";" +
+                                                    random.nextInt(0, 360)
                                     )
                             ));
                         }

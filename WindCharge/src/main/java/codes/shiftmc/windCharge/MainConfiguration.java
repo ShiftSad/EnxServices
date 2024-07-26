@@ -30,6 +30,14 @@ public final class MainConfiguration {
         MainConfiguration.configuration = this;
     }
 
+    public static MainConfiguration getInstance() {
+        if (configuration == null) {
+            throw new IllegalStateException("MainConfiguration has not been initialized yet");
+        }
+
+        return configuration;
+    }
+
     public record Config(
             Double knockbackMultiplier,
             Double velocityMultiplier
@@ -47,13 +55,5 @@ public final class MainConfiguration {
         public List<ParticleEffect> useEffects() {
             return ParticleUtil.convertString(use, WindChange.getPlugin(WindChange.class));
         }
-    }
-
-    public static MainConfiguration getInstance() {
-        if (configuration == null) {
-            throw new IllegalStateException("MainConfiguration has not been initialized yet");
-        }
-
-        return configuration;
     }
 }

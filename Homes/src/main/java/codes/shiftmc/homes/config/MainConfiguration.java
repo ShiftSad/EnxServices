@@ -1,15 +1,10 @@
 package codes.shiftmc.homes.config;
 
+import codes.shiftmc.commum.particle.ParticleEffect;
 import codes.shiftmc.commum.particle.ParticleUtil;
 import codes.shiftmc.homes.Homes;
-import codes.shiftmc.commum.particle.CircleEffect;
-import codes.shiftmc.commum.particle.ParticleEffect;
-import codes.shiftmc.commum.particle.WhooshEffect;
-import codes.shiftmc.commum.particle.image.ImageEffect;
 import org.bukkit.configuration.Configuration;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 public final class MainConfiguration {
