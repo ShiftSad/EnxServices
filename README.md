@@ -46,6 +46,7 @@ Caso mais conveniente, tambem e possivel baixar e rodar o plugin diretamente no 
 - [x] Velocidade do projétil configurável
 
 ### Showcase
+(Videos, clique para assistir)
 [![Home Command](https://file.garden/ZoTRYFZJg1bmA4WJ/home-cmds.jpg)](https://file.garden/ZoTRYFZJg1bmA4WJ/home-cmds.mp4)
 [![Debug Particles](https://file.garden/ZoTRYFZJg1bmA4WJ/admin-view.jpg)](https://file.garden/ZoTRYFZJg1bmA4WJ/admin-view.mp4)
 [![Admin Views](https://file.garden/ZoTRYFZJg1bmA4WJ/debug-particle.jpg)](https://file.garden/ZoTRYFZJg1bmA4WJ/debug-particle.mp4)
