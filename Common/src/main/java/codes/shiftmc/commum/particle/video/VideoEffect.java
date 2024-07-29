@@ -50,16 +50,13 @@ public class VideoEffect extends ParticleEffect {
     @Override
     public void animationStart(Location location) {
         AtomicInteger frame = new AtomicInteger(0);
-        System.out.println("Starting video effect");
         taskId = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
             if (frame.get() >= particles.size()) {
-                System.out.println("Ending video effect");
                 plugin.getServer().getScheduler().cancelTask(taskId);
                 animationEnd();
                 return;
             }
 
-            System.out.println("Spawning frame " + frame.get());
             particles.get(frame.getAndIncrement()).forEach(particle -> {
                 var dustOptions = particle.dustOptions();
                 var offset = particle.offset();

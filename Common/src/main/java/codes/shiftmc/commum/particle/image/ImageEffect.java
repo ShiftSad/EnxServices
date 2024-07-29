@@ -135,7 +135,7 @@ public class ImageEffect extends ParticleEffect {
         return rotated;
     }
 
-    private BufferedImage resizeImage(BufferedImage image, int targetWidth, int targetHeight) throws IOException {
+    public static BufferedImage resizeImage(BufferedImage image, int targetWidth, int targetHeight) throws IOException {
         // Create a new BufferedImage for the resized image
         BufferedImage resizedImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_ARGB);
         Graphics2D graphics2D = resizedImage.createGraphics();
