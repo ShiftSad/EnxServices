@@ -1,13 +1,18 @@
 package codes.shiftmc.commum.particle;
 
 import codes.shiftmc.commum.particle.image.ImageEffect;
+import codes.shiftmc.commum.particle.video.VideoEffect;
+import codes.shiftmc.commum.particle.video.VideoRenderer;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ParticleUtil {
+
+    private static final Map<String, VideoRenderer> renderers = Map.of();
 
     public static List<ParticleEffect> convertString(List<String> strings, JavaPlugin plugin) {
         ArrayList<ParticleEffect> effects = new ArrayList<>();
@@ -28,6 +33,26 @@ public class ParticleUtil {
                     var size = Float.parseFloat(split[4]);
                     var divide = Float.parseFloat(split[5]);
                     effects.add(new ImageEffect(plugin, new File(path), width, height, size, divide));
+                }
+
+                case "VIDEO" -> {
+                    var path = split[1];
+                    var width = Integer.parseInt(split[2]);
+                    var height = Integer.parseInt(split[3]);
+                    var size = Float.parseFloat(split[4]);
+                    var divide = Float.parseFloat(split[5]);
+                    var duration = Integer.parseInt(split[6]);
+                    if (path == null) {
+                        throw new IllegalArgumentException("Invalid path");
+                    }
+
+                    if (renderers.containsKey(path)) {
+                        effects.add(new VideoEffect(plugin, divide, renderers.get(path).getFrames()));
+                    } else {
+                        var renderer = new VideoRenderer(path, width, height, size, duration);
+                        renderers.put(path, renderer);
+                        effects.add(new VideoEffect(plugin, divide, renderer.getFrames()));
+                    }
                 }
 
                 case "WHOOSH" -> {

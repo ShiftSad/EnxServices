@@ -33,6 +33,16 @@ visual:
     #   - Altura -> Int
     #   - TamanhoParticula -> Float
     #   - DividirTamanho -> Float
+    # - Video: Nao existe transparencia
+    #   - Path -> String (De preferencia com final .banana)
+    #     - Recomendado pre-computar o video utilizando "/homedebug particle video path width height size divide duration false")
+    #       dentro do servidor, para gerar arquivo ".banana".
+    #   - Largura -> Int
+    #   - Altura -> Int
+    #   - TamanhoParticula -> Float
+    #   - DividirTamanho -> Float
+    #   - Duracao -> Int
+    #     - Zero para a duracao do video.
     teleport-start:
       - "IMAGE:plugins/Homes/rick.png:32:32:0.6:10"
       - "CIRCLE:FIREWORK:5:true"
