@@ -136,7 +136,7 @@ public class DebugCommand {
 
         var image = new CommandAPICommand("image")
                 .withArguments(
-                        new StringArgument("path"),
+                        new TextArgument("path"),
                         new IntegerArgument("width"),
                         new IntegerArgument("height"),
                         new FloatArgument("size"),
@@ -165,7 +165,7 @@ public class DebugCommand {
 
         var video = new CommandAPICommand("video")
                 .withArguments(
-                        new StringArgument("path"),
+                        new TextArgument("path"),
                         new IntegerArgument("width"),
                         new IntegerArgument("height"),
                         new FloatArgument("size"),

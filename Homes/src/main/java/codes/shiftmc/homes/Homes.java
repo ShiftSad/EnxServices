@@ -14,6 +14,7 @@ import xyz.xenondevs.invui.InvUI;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Objects;
 
 public final class Homes extends JavaPlugin {
 
@@ -76,6 +77,11 @@ public final class Homes extends JavaPlugin {
             throw new RuntimeException(e);
         }
 
+        if (Objects.equals(databaseConfig.host(), "host")) {
+            getLogger().warning("Por favor, configure o arquivo mysql.json");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
         database = new MysqlDatabase(databaseConfig);
 
         // Save sample rick image
@@ -107,5 +113,8 @@ public final class Homes extends JavaPlugin {
         new DelhomeCommand(database).get().register(this);
         new AdminHomeCommand().get().register(this);
         new DebugCommand(this, database).get().register(this);
+
+        // Pre cache all videos
+        MainConfiguration.getInstance().visual.particle().teleportStartEffects();
     }
 }

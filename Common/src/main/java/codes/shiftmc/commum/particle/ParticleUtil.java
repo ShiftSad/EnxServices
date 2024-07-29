@@ -1,18 +1,20 @@
 package codes.shiftmc.commum.particle;
 
 import codes.shiftmc.commum.particle.image.ImageEffect;
+import codes.shiftmc.commum.particle.image.ParticleData;
 import codes.shiftmc.commum.particle.video.VideoEffect;
 import codes.shiftmc.commum.particle.video.VideoRenderer;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ParticleUtil {
 
-    private static final Map<String, VideoRenderer> renderers = Map.of();
+    private static final Map<String, List<List<ParticleData>>> videoCache = new HashMap<>();
 
     public static List<ParticleEffect> convertString(List<String> strings, JavaPlugin plugin) {
         ArrayList<ParticleEffect> effects = new ArrayList<>();
@@ -42,17 +44,17 @@ public class ParticleUtil {
                     var size = Float.parseFloat(split[4]);
                     var divide = Float.parseFloat(split[5]);
                     var duration = Integer.parseInt(split[6]);
-                    if (path == null) {
-                        throw new IllegalArgumentException("Invalid path");
+
+                    if (videoCache.containsKey(path)) {
+                        effects.add(new VideoEffect(plugin, divide, videoCache.get(path)));
+                        return;
                     }
 
-                    if (renderers.containsKey(path)) {
-                        effects.add(new VideoEffect(plugin, divide, renderers.get(path).getFrames()));
-                    } else {
-                        var renderer = new VideoRenderer(path, width, height, size, duration);
-                        renderers.put(path, renderer);
-                        effects.add(new VideoEffect(plugin, divide, renderer.getFrames()));
-                    }
+                    var renderer = new VideoRenderer(path, width, height, size, duration);
+                    renderer.render().thenAccept(r -> {
+                        videoCache.put(path, r.getFrames());
+                        effects.add(new VideoEffect(plugin, divide, r.getFrames()));
+                    });
                 }
 
                 case "WHOOSH" -> {
