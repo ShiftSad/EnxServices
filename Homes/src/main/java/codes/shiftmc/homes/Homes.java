@@ -88,6 +88,15 @@ public final class Homes extends JavaPlugin {
             }
         }
 
+        var badAppleBanana = new File(data, "badapple.mp4.banana");
+        if (!badAppleBanana.exists()) {
+            try {
+                Files.write(badAppleBanana.toPath(), getResource("badapple.mp4.banana").readAllBytes());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         InvUI.getInstance().setPlugin(this);
 
         // Register listeners and commands

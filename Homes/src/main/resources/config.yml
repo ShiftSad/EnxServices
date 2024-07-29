@@ -34,18 +34,19 @@ visual:
     #   - TamanhoParticula -> Float
     #   - DividirTamanho -> Float
     # - Video: Nao existe transparencia
-    #   - Path -> String (De preferencia com final .banana)
+    #   - Path -> String (De preferência com final.banana)
     #     - Recomendado pre-computar o video utilizando "/homedebug particle video path width height size divide duration false")
     #       dentro do servidor, para gerar arquivo ".banana".
     #   - Largura -> Int
     #   - Altura -> Int
     #   - TamanhoParticula -> Float
     #   - DividirTamanho -> Float
-    #   - Duracao -> Int
-    #     - Zero para a duracao do video.
+    #   - Duracao -> Int (Frames)
+    #     - Zero para a duracao do video. Video vai continuar a tocar mesmo apos o teleporte caso seja maior que o teleport countdown
     teleport-start:
       - "IMAGE:plugins/Homes/rick.png:32:32:0.6:10"
       - "CIRCLE:FIREWORK:5:true"
+      # - "VIDEO:plugins/Homes/badapple.mp4.banana:30:17:0.8:5:100"
 
   sound:
     teleport-start: entity.enderman.teleport
