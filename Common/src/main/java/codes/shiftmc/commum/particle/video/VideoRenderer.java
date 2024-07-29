@@ -12,8 +12,7 @@ import org.jcodec.common.model.Picture;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +33,12 @@ public class VideoRenderer {
         this.duration = duration;
 
         this.frames = new ArrayList<>();
+
+        // If videoPath ends with ".banana", load the frames from the file
+        if (videoPath.endsWith(".banana")) {
+            frames.addAll(loadFramesFromFile(videoPath));
+            return;
+        }
 
         List<BufferedImage> bufferedImages = extractFrames(videoPath);
         for (BufferedImage bufferedImage : bufferedImages) {
@@ -60,6 +65,10 @@ public class VideoRenderer {
             }
             frames.add(particles);
         }
+
+        // Save the frames to a file
+        var filePath = videoPath + ".banana";
+        saveFramesToFile(filePath);
     }
 
     public List<List<ParticleData>> getFrames() {
@@ -89,5 +98,27 @@ public class VideoRenderer {
         byte[] intData = picture.getPlaneData(0);
         System.arraycopy(intData, 0, data, 0, intData.length);
         return image;
+    }
+
+    private void saveFramesToFile(String filePath) {
+        try (FileOutputStream fileOut = new FileOutputStream(filePath);
+             ObjectOutputStream out = new ObjectOutputStream(fileOut)) {
+            out.writeObject(frames);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<List<ParticleData>> loadFramesFromFile(String filePath) {
+        try (FileInputStream fileIn = new FileInputStream(filePath);
+             ObjectInputStream in = new ObjectInputStream(fileIn)) {
+            return (List<List<ParticleData>>) in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Failed to load frames from file: " + filePath);
+        return new ArrayList<>();
     }
 }
