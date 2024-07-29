@@ -2,6 +2,8 @@ package codes.shiftmc.homes.commands;
 
 import codes.shiftmc.commum.particle.CircleEffect;
 import codes.shiftmc.commum.particle.image.ImageEffect;
+import codes.shiftmc.commum.particle.video.VideoEffect;
+import codes.shiftmc.commum.particle.video.VideoRenderer;
 import codes.shiftmc.homes.UserController;
 import codes.shiftmc.homes.database.Database;
 import codes.shiftmc.homes.model.Home;
@@ -14,12 +16,11 @@ import dev.jorel.commandapi.arguments.*;
 import dev.jorel.commandapi.wrappers.ParticleData;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jcodec.api.JCodecException;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.io.IOException;
+import java.util.*;
 
 public class DebugCommand {
 
@@ -162,8 +163,48 @@ public class DebugCommand {
                     new ImageEffect(plugin, file, width, height, size, divide).animationStart(sender.getLocation());
                 });
 
+        var video = new CommandAPICommand("video")
+                .withArguments(
+                        new StringArgument("path"),
+                        new IntegerArgument("width"),
+                        new IntegerArgument("height"),
+                        new FloatArgument("size"),
+                        new FloatArgument("divide"),
+                        new BooleanArgument("play").setOptional(true)
+                )
+                .executesPlayer((sender, args) -> {
+                    String path = (String) args.get("path");
+                    Integer width = (Integer) args.get("width");
+                    Integer height = (Integer) args.get("height");
+                    Float size = (Float) args.get("size");
+                    Float divide = (Float) args.get("divide");
+
+                    if (path == null || width == null || height == null || size == null || divide == null) {
+                        sender.sendMessage("Something went wrong");
+                        return;
+                    }
+
+                    var file = new File(path);
+                    if (!file.exists()) {
+                        sender.sendMessage("File does not exist");
+                        return;
+                    }
+
+                    try {
+                        var videoRenderer = new VideoRenderer(path, width, height, size);
+                        var time = System.currentTimeMillis();
+                        videoRenderer.render().thenAccept((renderer) -> {
+                            sender.sendMessage("Video rendered, " + renderer.getFrames().size() + " frames in " + (System.currentTimeMillis() - time) + "ms");
+                            if ((Boolean) args.getOptional("play").orElse(false)) {
+                                new VideoEffect(plugin, divide, renderer.getFrames()).animationStart(sender.getLocation());
+                            }
+                        });
+                    } catch (Exception e) { throw new RuntimeException(e); }
+
+                });
+
         return new CommandAPICommand("particle")
-                .withSubcommands(circle, image);
+                .withSubcommands(circle, image, video);
     }
 
     private UUID generateUUIDWithPrefix() {

@@ -15,60 +15,71 @@ import java.awt.image.DataBufferByte;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class VideoRenderer {
 
     private final String videoPath;
     private final int width;
     private final int height;
-    private final int duration;
+    private final float size;
 
     private final List<List<ParticleData>> frames;
 
-    @SneakyThrows
-    public VideoRenderer(String videoPath, int width, int height, int duration, int size) {
+    private final ExecutorService executor = Executors.newFixedThreadPool(4);
+
+    public VideoRenderer(String videoPath, int width, int height, float size) {
         this.videoPath = videoPath;
         this.width = width;
         this.height = height;
-        this.duration = duration;
-
+        this.size = size;
         this.frames = new ArrayList<>();
+    }
 
-        // If videoPath ends with ".banana", load the frames from the file
-        if (videoPath.endsWith(".banana")) {
-            frames.addAll(loadFramesFromFile(videoPath));
-            return;
-        }
-
-        List<BufferedImage> bufferedImages = extractFrames(videoPath);
-        for (BufferedImage bufferedImage : bufferedImages) {
-            List<ParticleData> particles = new ArrayList<>();
-            for (int y = 0; y < height; y++) {
-                for (int x = 0; x < width; x++) {
-                    int pixel = bufferedImage.getRGB(x, y);
-
-                    int alpha = (pixel >> 24) & 0xff;
-                    int red = (pixel >> 16) & 0xff;
-                    int green = (pixel >> 8) & 0xff;
-                    int blue = (pixel) & 0xff;
-
-                    // Ignore black or pixels near black
-                    if (red < 15 && green < 15 && blue < 15) {
-                        continue;
-                    }
-
-                    var dustOptions = new Particle.DustOptions(Color.fromARGB(alpha, red, green, blue), size);
-                    var offset = new Offset(x, 0, y);
-
-                    particles.add(new ParticleData(dustOptions, offset));
-                }
+    public CompletableFuture<VideoRenderer> render() {
+        return CompletableFuture.supplyAsync(() -> {
+            // If videoPath ends with ".banana", load the frames from the file
+            if (videoPath.endsWith(".banana")) {
+                System.out.println("Loading frames from file: " + videoPath);
+                frames.addAll(loadFramesFromFile(videoPath));
+                return this;
             }
-            frames.add(particles);
-        }
 
-        // Save the frames to a file
-        var filePath = videoPath + ".banana";
-        saveFramesToFile(filePath);
+            List<BufferedImage> bufferedImages = extractFrames(videoPath);
+            for (BufferedImage bufferedImage : bufferedImages) {
+                List<ParticleData> particles = new ArrayList<>();
+                for (int y = 0; y < height; y++) {
+                    for (int x = 0; x < width; x++) {
+                        int pixel = bufferedImage.getRGB(x, y);
+
+                        int alpha = (pixel >> 24) & 0xff;
+                        int red = (pixel >> 16) & 0xff;
+                        int green = (pixel >> 8) & 0xff;
+                        int blue = (pixel) & 0xff;
+
+                        // Ignore black or pixels near black
+                        if (red < 15 && green < 15 && blue < 15) {
+                            continue;
+                        }
+
+                        var dustOptions = new Particle.DustOptions(Color.fromARGB(alpha, red, green, blue), size);
+                        var offset = new Offset(x, 0, y);
+
+                        particles.add(new ParticleData(dustOptions, offset));
+                    }
+                }
+                frames.add(particles);
+            }
+
+            // Save the frames to a file
+            var filePath = videoPath + ".banana";
+            System.out.println("Saving frames to file: " + filePath + " (" + frames.size() + " frames)");
+            saveFramesToFile(filePath);
+
+            return this;
+        }, executor);
     }
 
     public List<List<ParticleData>> getFrames() {
@@ -79,12 +90,22 @@ public class VideoRenderer {
         return new ArrayList<>(frames.get(number));
     }
 
-    private List<BufferedImage> extractFrames(String videoFilePath) throws IOException, JCodecException {
+    private List<BufferedImage> extractFrames(String videoFilePath) {
         List<BufferedImage> frames = new ArrayList<>();
-        FrameGrab grab = FrameGrab.createFrameGrab(NIOUtils.readableChannel(new File(videoFilePath)));
+        FrameGrab grab;
+        try {
+            grab = FrameGrab.createFrameGrab(NIOUtils.readableChannel(new File(videoFilePath)));
+        } catch (IOException | JCodecException e) {
+            throw new RuntimeException(e);
+        }
         Picture picture;
 
-        while (null != (picture = grab.getNativeFrame())) {
+        while (true) {
+            try {
+                if (null == (picture = grab.getNativeFrame())) break;
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             BufferedImage bufferedImage = toBufferedImage(picture);
             frames.add(bufferedImage);
         }
@@ -101,24 +122,26 @@ public class VideoRenderer {
     }
 
     private void saveFramesToFile(String filePath) {
-        try (FileOutputStream fileOut = new FileOutputStream(filePath);
-             ObjectOutputStream out = new ObjectOutputStream(fileOut)) {
-            out.writeObject(frames);
+        // Save the frames to a file
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            frames.stream().map(frame -> {
+                StringBuilder builder = new StringBuilder();
+                frame.forEach(particle -> builder.append(particle.serialize()).append(" "));
+                return builder.toString();
+            }).forEach(line -> {
+                try {
+                    writer.write(line);
+                    writer.newLine();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
-    @SuppressWarnings("unchecked")
     private List<List<ParticleData>> loadFramesFromFile(String filePath) {
-        try (FileInputStream fileIn = new FileInputStream(filePath);
-             ObjectInputStream in = new ObjectInputStream(fileIn)) {
-            return (List<List<ParticleData>>) in.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println("Failed to load frames from file: " + filePath);
-        return new ArrayList<>();
+        return frames;
     }
 }
