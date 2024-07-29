@@ -30,16 +30,18 @@ public class VideoRenderer {
     private final int width;
     private final int height;
     private final float size;
+    private final int duration;
 
     private final List<List<ParticleData>> frames;
 
     private final ExecutorService executor = Executors.newFixedThreadPool(4);
 
-    public VideoRenderer(String videoPath, int width, int height, float size) {
+    public VideoRenderer(String videoPath, int width, int height, float size, int duration) {
         this.videoPath = videoPath;
         this.width = width;
         this.height = height;
         this.size = size;
+        this.duration = duration;
         this.frames = new ArrayList<>();
     }
 
@@ -104,7 +106,7 @@ public class VideoRenderer {
         }
         Picture picture;
 
-        while (true) {
+        while (duration == 0 || frames.size() < duration) {
             try {
                 if (null == (picture = grab.getNativeFrame())) break;
             } catch (IOException e) {
@@ -143,9 +145,11 @@ public class VideoRenderer {
         Charset charset = StandardCharsets.UTF_8;
 
         try (BufferedReader bufferedReader = Files.newBufferedReader(Path.of(filePath), charset)) {
+            var i = 0;
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 List<ParticleData> particles = new ArrayList<>();
+                if (i++ > duration - 1) continue;
                 for (String data : line.split(" ")) {
                     var particle = ParticleData.deserialize(data);
                     particles.add(particle);

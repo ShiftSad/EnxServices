@@ -170,6 +170,7 @@ public class DebugCommand {
                         new IntegerArgument("height"),
                         new FloatArgument("size"),
                         new FloatArgument("divide"),
+                        new IntegerArgument("duration").setOptional(true),
                         new BooleanArgument("play").setOptional(true)
                 )
                 .executes((sender, args) -> {
@@ -191,7 +192,8 @@ public class DebugCommand {
                     }
 
                     try {
-                        var videoRenderer = new VideoRenderer(path, width, height, size);
+                        var duration = (Integer) args.getOptional("duration").orElse(0);
+                        var videoRenderer = new VideoRenderer(path, width, height, size, duration);
                         var time = System.currentTimeMillis();
 
                         // Try to cast sender as a player, if it fails, set location to 0,0,0
