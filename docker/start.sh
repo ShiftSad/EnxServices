@@ -5,6 +5,22 @@ PORT=${MC_PORT:-25565}
 
 echo "Using port: $PORT"
 
+# Create mysql.json with environment variables
+cat <<EOF > /minecraft/mysql.json
+{
+  "username": "${MYSQL_USERNAME}",
+  "password": "${MYSQL_PASSWORD}",
+  "database": "${MYSQL_DATABASE}",
+  "host": "${MYSQL_HOST}",
+  "port": ${MYSQL_PORT},
+  "maximumPoolSize": ${MYSQL_MAXIMUM_POOL_SIZE},
+  "maxLifeTime": ${MYSQL_MAX_LIFE_TIME},
+  "keepaliveTime": ${MYSQL_KEEPALIVE_TIME},
+  "connectionTimeout": ${MYSQL_CONNECTION_TIMEOUT},
+  "leakDetectionThreshold": ${MYSQL_LEAK_DETECTION_THRESHOLD}
+}
+EOF
+
 PROJECT="paper"
 MINECRAFT_VERSION="1.21"
 LATEST_BUILD=$(curl -s https://api.papermc.io/v2/projects/${PROJECT}/versions/${MINECRAFT_VERSION}/builds | jq -r '.builds | map(select(.channel == "default") | .build) | .[-1]')
@@ -16,7 +32,7 @@ if [ "$LATEST_BUILD" != "null" ]; then
 
   # Download the latest Paper version
   echo "Downloading PaperMC..."
-  curl -o server.jar $PAPERMC_URL
+  curl -o server.jar "$PAPERMC_URL"
   echo "Download completed."
 
 else

@@ -7,16 +7,20 @@ Projeto criado para etapa pratica na vaga Desenvolvedor Junior na EnxServices.
 ### Docker
 
 A forma mais facil seria por meio do Docker!<br>
-≥ Lembrando que sera necessario adicionar valores validos para o banco de dados em `/plugins/Homes/database.json`
+≥ Lembrando que sera necessario adicionar valores validos para o banco de dados em `/plugins/Homes/mysql.json`<br>
+Isso pode ser feito por meio das variaveis de ambiente:
+`
+MYSQL_USERNAME MYSQL_PASSWORD MYSQL_DATABASE MYSQL_HOST MYSQL_PORT
+`
 
 ```shell
-docker run --rm -p 25575:25575 -e MC_PORT=25575 -e EULA=true shiftsad/enxservices
+docker run -p 25575:25575 -e MC_PORT=25575 -e EULA=true shiftsad/enxservices
 ```
 
 ### Plugin
 
 Caso mais conveniente, tambem e possivel baixar e rodar o plugin diretamente no servidor.<br>
-≥ Lembrando que sera necessario adicionar valores validos para o banco de dados em `/plugins/Homes/database.json`<br>
+≥ Lembrando que sera necessario adicionar valores validos para o banco de dados em `/plugins/Homes/mysql.json`<br>
 [WindCharge](https://file.garden/ZoTRYFZJg1bmA4WJ/WindCharge.jar),
 [Homes](https://file.garden/ZoTRYFZJg1bmA4WJ/Homes.jar),
 [CommandAPI](https://file.garden/ZoTRYFZJg1bmA4WJ/CommandAPI-9.5.1.jar) (Dependencia)
