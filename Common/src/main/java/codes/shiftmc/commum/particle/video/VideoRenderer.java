@@ -13,6 +13,10 @@ import org.jcodec.common.model.Picture;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -44,6 +48,7 @@ public class VideoRenderer {
             if (videoPath.endsWith(".banana")) {
                 System.out.println("Loading frames from file: " + videoPath);
                 frames.addAll(loadFramesFromFile(videoPath));
+                System.out.println("Loaded " + frames.size() + " frames");
                 return this;
             }
 
@@ -142,6 +147,22 @@ public class VideoRenderer {
     }
 
     private List<List<ParticleData>> loadFramesFromFile(String filePath) {
+        List<List<ParticleData>> frames = new ArrayList<>();
+        Charset charset = StandardCharsets.UTF_8;
+
+        try (BufferedReader bufferedReader = Files.newBufferedReader(Path.of(filePath), charset)) {
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                List<ParticleData> particles = new ArrayList<>();
+                for (String data : line.split(" ")) {
+                    var particle = ParticleData.deserialize(data);
+                    particles.add(particle);
+                }
+                frames.add(particles);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         return frames;
     }
 }

@@ -172,7 +172,7 @@ public class DebugCommand {
                         new FloatArgument("divide"),
                         new BooleanArgument("play").setOptional(true)
                 )
-                .executesPlayer((sender, args) -> {
+                .executes((sender, args) -> {
                     String path = (String) args.get("path");
                     Integer width = (Integer) args.get("width");
                     Integer height = (Integer) args.get("height");
@@ -193,10 +193,14 @@ public class DebugCommand {
                     try {
                         var videoRenderer = new VideoRenderer(path, width, height, size);
                         var time = System.currentTimeMillis();
+
+                        // Try to cast sender as a player, if it fails, set location to 0,0,0
+                        var location = sender instanceof org.bukkit.entity.Player ? ((org.bukkit.entity.Player) sender).getLocation() : new org.bukkit.Location(Bukkit.getWorlds().getFirst(), 0, 200, 0);
+
                         videoRenderer.render().thenAccept((renderer) -> {
                             sender.sendMessage("Video rendered, " + renderer.getFrames().size() + " frames in " + (System.currentTimeMillis() - time) + "ms");
                             if ((Boolean) args.getOptional("play").orElse(false)) {
-                                new VideoEffect(plugin, divide, renderer.getFrames()).animationStart(sender.getLocation());
+                                new VideoEffect(plugin, divide, renderer.getFrames()).animationStart(location);
                             }
                         });
                     } catch (Exception e) { throw new RuntimeException(e); }

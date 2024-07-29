@@ -16,9 +16,13 @@ public record ParticleData(
         var split = data.split(";");
         var color = Color.fromRGB(Integer.parseInt(split[0]));
         var size = Float.parseFloat(split[1]);
-        var x = Integer.parseInt(split[2]);
-        var y = Integer.parseInt(split[3]);
-        var z = Integer.parseInt(split[4]);
+        var x = Double.parseDouble(split[2]);
+        var y = Double.parseDouble(split[3]);
+        var z = Double.parseDouble(split[4]);
+
+        if (split.length > 5) {
+            throw new IllegalArgumentException("Invalid data: " + data);
+        }
 
         return new ParticleData(new Particle.DustOptions(color, size), new Offset(x, y, z));
     }

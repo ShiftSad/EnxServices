@@ -26,6 +26,7 @@ public class VideoEffect extends ParticleEffect {
     public VideoEffect(JavaPlugin plugin, float divide, List<List<ParticleData>> particles) {
         this.plugin = plugin;
         this.divide = divide;
+        this.particles.addAll(particles);
 
         centerX = particles.getFirst().stream().mapToDouble(p -> p.offset().x()).average().orElse(0);
         centerZ = particles.getFirst().stream().mapToDouble(p -> p.offset().z()).average().orElse(0);
@@ -48,15 +49,18 @@ public class VideoEffect extends ParticleEffect {
 
     @Override
     public void animationStart(Location location) {
-        AtomicInteger frame = new AtomicInteger();
+        AtomicInteger frame = new AtomicInteger(0);
+        System.out.println("Starting video effect");
         taskId = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
             if (frame.get() >= particles.size()) {
+                System.out.println("Ending video effect");
                 plugin.getServer().getScheduler().cancelTask(taskId);
                 animationEnd();
                 return;
             }
 
-            particles.get(frame.get()).forEach(particle -> {
+            System.out.println("Spawning frame " + frame.get());
+            particles.get(frame.getAndIncrement()).forEach(particle -> {
                 var dustOptions = particle.dustOptions();
                 var offset = particle.offset();
 
@@ -72,8 +76,6 @@ public class VideoEffect extends ParticleEffect {
                         dustOptions
                 );
             });
-
-            frame.getAndIncrement();
         }, 0, 1);
     }
 
