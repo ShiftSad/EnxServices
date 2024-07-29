@@ -45,7 +45,6 @@ public class ExplosionEvent implements Listener {
     @EventHandler
     public void onLand(ProjectileHitEvent event) {
         event.getEntity().getNearbyEntities(1.2, 1.2, 1.2).forEach(entity -> {
-            System.out.println(Bukkit.getCurrentTick());
             explosionMultiplier.put(entity.getUniqueId(), Bukkit.getCurrentTick() + 3);
         });
     }
