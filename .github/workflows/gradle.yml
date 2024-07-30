@@ -49,13 +49,14 @@ jobs:
 
   upload:
     runs-on: ubuntu-latest
+    needs: build
     permissions:
       contents: read
       
     steps:
     - uses: actions/upload-artifact@v4
       with:
-        name: my-artifact
+        name: Plugins
         path: |
           WindCharge/build/libs/WindCharge.jar
           Homes/build/libs/Homes.jar
