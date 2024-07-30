@@ -57,9 +57,12 @@ jobs:
     - uses: actions/upload-artifact@v4
       with:
         name: Plugins
+        run: |
+          ls
+          tree
         path: |
-          WindCharge/build/libs/WindCharge.jar
-          Homes/build/libs/Homes.jar
+          ./WindCharge/build/libs/WindCharge.jar
+          ./Homes/build/libs/Homes.jar
   
   dependency-submission:
 
