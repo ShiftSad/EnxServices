@@ -36,6 +36,9 @@ jobs:
     - name: Build with Gradle Wrapper
       run: ./gradlew shadowJar
 
+    - name: List files for debugging
+      run: ls -R
+
     # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).
     # If your project does not have the Gradle Wrapper configured, you can use the following configuration to run Gradle with a specified version.
     #
@@ -54,12 +57,12 @@ jobs:
       contents: read
       
     steps:
+    - name: List files for debugging
+      run: ls -R
+    
     - uses: actions/upload-artifact@v4
       with:
         name: Plugins
-        run: |
-          ls
-          tree
         path: |
           ./WindCharge/build/libs/WindCharge.jar
           ./Homes/build/libs/Homes.jar
